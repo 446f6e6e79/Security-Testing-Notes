@@ -1,0 +1,15 @@
+# Ignora tutte le directory build e il loro contenuto
+build/
+
+# Oppure, per essere più espliciti:
+**/build/
+
+# Se vuoi ignorare anche file specifici ovunque si trovino:
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.pdf
