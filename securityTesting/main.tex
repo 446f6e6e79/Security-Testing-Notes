@@ -1,0 +1,974 @@
+\documentclass{article}
+% Importa tutti i pacchetti e le configurazioni
+\input{setup.tex}
+
+\title{Security Testing}
+\author{Davide Donà
+\and
+Andrea Blushi}
+\date{September 2025}
+
+\begin{document}
+%Title and table of contents
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+\subsection{Definitions}
+\paragraph{Software:} software can be defined as a set of \textbf{programs} and \textbf{data}, that provides \textbf{functionality}. Software and functionality always come with certain risks.
+
+\paragraph{Security:} \textbf{Understanding} and \textbf{identifying} security risks, induced by a software, and how to \textbf{mitigate them}.
+
+\paragraph{Secure software:} a software is \textbf{considered secure} if it satisfies a series of security objectives, such as:
+\begin{itemize}
+    \item \textbf{Confidentiality}: \textbf{unauthorized users} cannot \textbf{have access} or read information;
+    
+    \item \textbf{Integrity}: \textbf{unauthorized users} cannot \textbf{change} the information;
+
+    \item \textbf{Availability}: \textbf{authorized users} can always have access to the information.
+\end{itemize}
+There are many other security objectives. Each software doesn't have to implement each of them, but it's useful to find a good \textbf{trade-off} between \textbf{security} and \textbf{functionality}.
+
+\paragraph{Safety vs Security:} there's a slight difference between the two definitions, that is important to denote:
+\begin{itemize}
+    \item \textbf{Safety}: protecting the system from \textbf{accidental risks};
+    \item \textbf{Security}: \textbf{mitigating} the risk of danger caused by \textbf{intentional} or \textbf{malicious actions}.
+\end{itemize}
+
+\paragraph{Weakness:} a condition in a software (bug) that, under certain circumstances, could contribute to the introduction of vulnerabilities. 
+
+\paragraph{Vulnerability:} a chain of \textbf{weaknesses} linked by causality. If \textbf{exploited} it leads to a \textbf{security failure}. A \textbf{weakness} is a condition of a software, hardware, or service component that, under certain circumstances, could contribute to the introduction of vulnerabilities. 
+
+\paragraph{Security risk:} refers to the \textbf{probability} that a threat (any external actor) will \textbf{exploit a vulnerability}, combined with the \textbf{resulting impact} (damage).
+
+\paragraph{CWE:} \textbf{Common Weakness Enumeration}, provides a \textbf{public list} of the most common software and hardware \textbf{weaknesses} that can contribute to security vulnerabilities.
+
+\paragraph{CVE:} \textbf{Common Vulnerabilities and Exposure}, is a public list of \textbf{vulnerabilities} in widely-used software components.
+
+\subsection{Software Development Life Cycle}
+The \textbf{SDLC} is the series of \textbf{processes} and \textbf{procedures} that enables teams to \textbf{create software} and applications. The cycle is composed of various phases:
+\begin{itemize}
+    \item \textbf{Planning}: the senior members of the team, with the inputs from the customers, \textbf{plans} the basic \textbf{project plan};
+    \item \textbf{Defining}: during this phase, the document for the \textbf{product requirements} should be defined;
+    \item \textbf{Designing}: designing the architecture for the whole project;
+    \item \textbf{Building}: generating the programming code. The output should be the working final system;
+    \item \textbf{Testing}: during this phase, products defects are reported, tracked and fixed;
+    \item \textbf{Deployment}: the final release. Feedback from the users is usually collected, to better the software.
+\end{itemize}
+
+\subsubsection{From a security perspective}
+Now, we are going to analyze, from a \textbf{security perspective}, what should be done by a team during each of the just mentioned phases.
+
+\paragraph{Planning:}
+During this phase, the \textbf{security objectives} required by the software should be defined. The organization should also identify the regulations it needs to follow. 
+
+\paragraph{Defining:}
+This phase is composed of three main activities:
+
+\begin{itemize}
+    \item \textbf{Gap Analysis}: identify whether there is a need to provide training sessions (security and security awareness training) for the developers involved in the project;
+    \item \textbf{Risk Assessment}: analyze potential threats and vulnerabilities, and evaluate their possible impact on the project;
+    \item \textbf{Third-party software tracking}: a list containing both open-source and commercial \textbf{third-party software} must be defined. This allows the team to check the used software for updates and security patches.
+\end{itemize}
+
+\paragraph{Designing:}
+\begin{itemize}
+    \item \textbf{Least-privilege principle}: the program should always run on the account with the least privilege possible;
+    \item \textbf{Deny by default}: each access should be denied by default, unless explicitly allowed.
+    \item \textbf{Design Review}: the developer has to act as an attacker to discover vulnerabilities in the defined features.
+\end{itemize}
+
+\paragraph{Building:}
+\subparagraph{Security guidelines:}
+While the project is being built, is always important to follow the security guidelines, such as:
+\begin{itemize}
+    \item Always validate and check the input data and memory;
+    \item Check the command line arguments;
+    \item Use external files to protect passwords;
+    \item Deal with errors and exception;
+    \item Avoid the creation of files when possible. Otherwise, be caution when handling them.
+\end{itemize}
+There are some frameworks, such as \textbf{OWASP} that can help in the secure coding rule knowledge.
+
+\subparagraph{Code review:} conducted by a team of developers, that manually checks the code, focusing on implementation bugs. Usually, a checklist is used for checking secure coding.
+
+\subparagraph{Security Testing:} mainly composed of two isolated phases:
+\begin{itemize}
+    \item \textbf{Static Analysis}: tries to identify weaknesses, without executing the program;
+\end{itemize}
+
+\paragraph{Testing:}
+Other testing should be done once the final product has been developed. Different types of tests are usually run, such as:
+\begin{itemize}
+    \item \textbf{Dynamic Analysis}: identifies weaknesses by running software;
+    \item \textbf{Fuzzing}: involves giving random data to a program. It helps in finding bugs that humans often miss;
+    \item \textbf{Third-party penetration testing}: an attack simulation on the third-party software, with the intention to discover configuration flaws and vulnerabilities
+\end{itemize}
+Regardless, bugs should always be fixed ASAP, to reduce the cost of fixing them.
+
+\subsubsection{DevOps}
+The \textbf{DevOps} cycle is based on two main ideas: \textbf{rapid delivery} of new software and \textbf{quick feedback}. Developers continuously deliver new features in a short time span.
+Developers regularly merge their code changes in a central repository, where it gets automatically built, tested, and prepared for a release to production.
+\section{Code Weaknesses and Vulnerabilities}
+\subsection{Most common Weaknesses}
+We now present a selection of the \textbf{most dangerous software weaknesses}, to illustrate common coding patterns that lead to security vulnerabilities and to guide analysis and testing efforts.
+Knowing this classification can help us with:
+\begin{itemize}
+    \item \textbf{conducting an effective testing activity}: we know what to search while testing, so we can prioritize some issues, over others;
+    \item \textbf{improving the development process}: know solutions (ex: patterns, guidelines) to help developers improve their software, avoiding the introduction of weaknesses;
+    \item \textbf{driving bug-fixing}: prioritize the issues to solve, helping also to understand how to fix it.
+\end{itemize}
+
+\subsubsection{Use-After-Free(CWE-416)}
+\paragraph{Description:} The software \textbf{reuses} or \textbf{references memory}, after it has been \textbf{freed}. At some point afterwards, the memory may be allocated to another pointer. Any operation using the original pointer is no longer valid.
+
+\begin{lstlisting}[language=C]
+    char* ptr = (char*)malloc (SIZE);
+    if(err){
+        abrt = 1;
+        free(ptr);
+    }
+    if(abrt){
+        //Assessing a pointer 
+        logError("operation aborted before commit", ptr);
+    }
+\end{lstlisting}
+
+\textbf{UAF} can be found also when other resources, such as \textbf{file} or \textbf{network connections} are \textbf{mismanaged}.
+
+\paragraph{Prevention:} Once freed, all pointers should be set to \textbf{NULL}.
+
+\paragraph{Detection:} Using \textbf{static analysis}.
+
+\subsubsection{Heap-based Buffer Overflow(CWE-122)}
+\paragraph{Description:} A particular case of the \textbf{buffer overflow}, where the buffer is allocated in the \textbf{heap} portion of the memory. This means that the buffer was allocated using \textbf{malloc()}.
+
+\begin{lstlisting}[language=C]
+    #define BUFSIZE 4
+    int main(int argc, char **argv) {
+        char *buf;
+        buf = (char *)malloc(sizeof(char)*BUFSIZE);
+        strcpy(buf, argv[1]);
+    }
+\end{lstlisting}
+The problem here is caused by the function \verb|strcpy()|, which has no limits on the length of the element that should be copied to the buffer.
+
+\paragraph{Prevention:} Other equivalents, but \textbf{safer} functions should be used. For example \verb|strncpy()| takes as an argument the maximum number of characters that should be copied.
+\\Also, automatic buffer overflow detection mechanisms can be used.
+
+\paragraph{Detection:} Using \textbf{static analysis}.
+
+\subsubsection{Out-of-bounds Write(CWE-787)}
+\paragraph{Description:} The software writes data past the end, or before the beginning of the intended buffer.
+
+\begin{lstlisting}[language=C]
+    int id_sequence[3];
+    
+    id_sequence[0] = 123;
+    id_sequence[1] = 234;
+    id_sequence[2] = 345;
+    id_sequence[3] = 456;
+\end{lstlisting}
+
+\paragraph{Prevention:} Always verify that the buffer is as large as specified and that its boundaries are respected.
+
+\paragraph{Detection:} Using \textbf{static analysis} and \textbf{dynamic analysis}
+
+\subsubsection{Improper Input Validation(CWE-20)}
+\paragraph{Description:} The software receives input values, but it \textbf{does not validate} or \textbf{incorrectly validates} them. In case of no-validation, unintended input values can \textbf{alter the program control flow}.
+
+\begin{lstlisting}[language=C]
+    public static final double price = 20.00;
+    int quantity = currentUser.getAttribute("quantity");
+    double total = price * quantity;
+    chargeUser(total);
+\end{lstlisting}
+In this example, if the user inputs a negative number for the quantity, it can lead to an account credit instead of a debit.
+
+\paragraph{Prevention:} Always assume that all inputs are malicious. An input validation framework can be used to check all the untrusted inputs.
+
+\paragraph{Detection:} Using \textbf{static analysis} and \textbf{dynamic analysis}
+
+\subsubsection{Improper Neutralization of Special Elements used in an OS Command(CWE-78)}
+\paragraph{Description:} The software constructs an \textbf{OS command} using an \textbf{external input}, but it does not neutralize special elements that could modify the intended OS command.
+
+\begin{lstlisting}[language=php]
+    $userName = $_POST["user"];
+    $command = 'ls -l /home/' . $userName;
+    system($command);
+\end{lstlisting}
+This code takes the name of a user and lists the content of the user directory. There is no check on the variable \verb|$userName|, that could contain an \textbf{arbitrary OS command} such as: \verb|“;rm -rf /”|.
+Since the \verb|;| works as a command separator in Linux, such input would delete the entire file system.
+
+\paragraph{Prevention:} Use library calls rather than external processes and try to block the user from using semi-colons or other special characters.
+
+\paragraph{Detection:} Using \textbf{dynamic analysis}
+
+\subsubsection{De-serialization of Untrusted Data(CWE-502)}
+\paragraph{Description:} The software deserializes untrusted data without verifying that the resulting data will be valid.
+
+\begin{lstlisting}[language=Java]
+    try {
+        File file = new File("object.obj");
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+        javax.swing.JButton button = (javax.swing.JButton) in.readObject();
+        in.close();
+    }
+\end{lstlisting}
+The code deserializes an object from a file, received from an UI button and does not verify the source or contents of the received file.
+
+\paragraph{Prevention:} When deserializing data, a new Object should be populated, rather than just deserializing it.
+
+\paragraph{Detection:} Using \textbf{static analysis}
+
+\subsubsection{Server-Side Request Forgery(CWE-918)}
+\label{Server-Side Request Forgery}
+\paragraph{Description:} A security vulnerability in a \textbf{server A} allows an attacker to cause the \textbf{server-side application} to make requests to an unintended location (i.e., \textbf{another server B} or service). 
+\\The \textbf{attacker’s request} is \textbf{sent from the back end of the server}, so the \textbf{target service believes it came from a legitimate source}. 
+Attackers can \textbf{bypass access controls} (i.e., firewalls) that \textbf{prevent direct attacks on the target server} by exploiting trusted relationships between servers. 
+The compromised server can also be used as a proxy to conduct port scanning of internal hosts or to access restricted URLs and documents.
+\begin{comment}
+    Add image here!!!
+\end{comment}
+\paragraph{Prevention:} 
+\begin{itemize}
+    \item Limit outbound traffic from the application server.
+    \item Build a whitelist of trusted domains and IP addresses.
+    \item Sanitize user input to prevent potential risks.
+\end{itemize}
+
+\paragraph{Detection:} Automated static analysis
+
+\subsubsection{Access of Resource Using Incompatible Type(CWE-843)}
+\paragraph{Description:} The software initializes a resource such as a pointer, object or variable, using \textbf{one type}, but later accesses that resource using a type that is incompatible with the original type. Type confusion can lead to out-of-bounds memory access.
+
+\begin{lstlisting}[language=php]
+    $value = $_GET['value'];
+    $sum = $value + 5;
+    echo "value parameter is '$value'<p>";
+    echo "SUM is $sum";
+\end{lstlisting}
+An attacker could supply an input string such as \verb|value[] = 123|. From that point, value is treated as an array type, causing an error when the sum is calculated.
+
+\paragraph{Prevention:} Attention to implicit and explicit type conversion.
+
+\paragraph{Detection:} Using \textbf{static analysis}
+
+\subsubsection{Improper Limitation of a Pathname to a Restricted Directory(CWE-22)}
+\paragraph{Description:} The product uses an \textbf{external input} to \textbf{construct a pathname} for a file or directory, located into a restricted parent directory. Without the neutralization of special elements, the path can relate to a different location, not supposed to be accessible.
+
+\begin{lstlisting}[language=Java]
+    String path = getInputPath();
+    if (path.startsWith("/safe_dir/")){
+        File f = new File(path);
+        f.delete()
+    }
+\end{lstlisting}
+\paragraph{Prevention:} 
+\begin{itemize}
+    \item Always assume all input is malicious;
+    \item When the set of acceptable object, such as filenames or URLs is limited and known, create a mapping from a set of \textbf{fixed input values} to the \textbf{actual} \textbf{filenames} or \textbf{URLs}, rejecting all the other inputs.
+\end{itemize}
+\paragraph{Detection:} Using \textbf{static analysis} or \textbf{dynamic analysis}.
+
+\subsubsection{Missing Authentication for Critical Function}(CWE-306)
+\paragraph{Description:} The product \textbf{does not perform any authentication} for a functionality that requires a provable user identity.
+\paragraph{Prevention:} Where possible, avoid using custom authentication routines. Instead, consider using authentication capabilities as provided by libraries or frameworks.
+
+\paragraph{Detection:} Using \textbf{static analysis} or \textbf{dynamic analysis}, such as \textbf{vulnerability scanning}.
+
+\subsection{Most common security risks}
+\textbf{OWASP} is an open source project, providing guides, guidelines and suggestions to develop and test secure applications. Its Top-10 lists the most critical security risks for web applications.
+
+\subsubsection{Broken Access Control (A01-2021)}
+\paragraph{Description:} The \textbf{access control} enforces policy such that \textbf{users cannot act outside their intended permissions}. Its failure leads to \textbf{unauthorized information} disclosure, modification, or destruction.
+
+\paragraph{Example:} The application uses unverified data in SQL to access information:
+
+\begin{lstlisting}[language=Java]
+//Trying to access using this url
+//https://example.com/app/accountInfo?acct=myacct    
+PreparedStatement pstmt = connect.prepareStatement(query);
+pstmt.setString(1, request.getParameter("acct")); 
+//myacct is a "reference" to an account
+ResultSet results = pstmt.executeQuery( );
+\end{lstlisting}
+If an attacker modifies the browser's \textbf{acct parameter} with whatever account number they want, the attacker can access any other user's account.
+\paragraph{Prevention:}
+\begin{itemize}
+    \item Deny by default;
+    \item Access control is effective only in truster server-side code;
+    \item \textbf{Access control unit should be included in the tests}.
+\end{itemize}
+
+\subsubsection{Cryptography Failures (A02-2021)}
+\paragraph{Description:} Violation of the protection needed for exchanged data. Data can't be transmitted in clear text, but should always be encrypted, using properly set cryptographic algorithms.
+\paragraph{Example:} An application correctly encrypts credit card numbers in a database before storing them. Data is automatically decrypted once retrieved, allowing an SQL injection to retrieve all the information in clear text.
+\paragraph{Prevention:}
+Proper encryption, with a proper setting of the used cryptographic mechanism.
+
+\subsubsection{Injection (A03-2021)}
+\paragraph{Description:}
+An application is vulnerable to this type of attack when user input data is not validated by the application before using it as command parameters.
+\paragraph{Example:}
+\begin{lstlisting}[language=Java]
+String query = "SELECT \* FROM accounts WHERE custID='" +
+    request.getParameter("id") + "";
+\end{lstlisting}
+If the attacker manages to set the id parameter for example to \textit{‘ or ‘1’=’1} the query will return all the records from the account table.
+\paragraph{Prevention:} Use server-side input validation, checking in particular for escape characters.
+
+\subsubsection{Insecure design (A04-2021)}
+\paragraph{Description:} Insecure design concerns weaknesses related to missing or ineffective control design. An usual example could be the use of "questions and answers" for the credential recovery workflow. They in fact cannot be trusted as evidence of user identity.
+\paragraph{Prevention:} Always adopt a secure design methodology.
+
+\subsubsection{Security Misconfiguration (A05-2021)}
+\paragraph{Description:}
+Refers to a variety of situations, such as:
+\begin{itemize}
+    \item Missing appropriate security hardening or improperly configured permissions;
+    \item Unnecessary features installed (ex: ports, accounts, privileges);
+    \item Default account, with default passwords;
+    \item Missing error handling, revealing stack traces or other important information;
+    \item Out of date software.
+\end{itemize}
+\paragraph{Prevention:}
+A secure installation process should be implemented. Always review and update configuration.
+
+\subsubsection{Vulnerable and Outdated Components (A06-2021)}
+\paragraph{Description:} The component of a software can be vulnerable, unsupported, or out of date.
+\paragraph{Prevention:} 
+\begin{itemize}
+    \item Remove unused dependencies, unnecessary features, components and documentation;
+    \item Continuously monitor the versions of both client and server components and their dependencies;
+    \item Obtain components only from official sources;
+\end{itemize}
+
+\subsubsection{Identification and Authentication Failures (A07-2021)}
+\paragraph{Description:} \textbf{Authentication}, \textbf{confirmation} of user's \textbf{identity} and \textbf{session management} are critical to protect against authentication-related attacks.
+\paragraph{Prevention:}
+\begin{itemize}
+    \item Implement proper identification and authentication processes (ex: MFA, to prevent brute force, stolen credential reuse attacks);
+    \item Do not permit the usage of weak passwords;
+    \item Use a \textbf{server-side}, secure, \textbf{session manager}.
+\end{itemize}
+
+\subsubsection{Software and Data Integrity Failures (A08-2021)}
+\paragraph{Description:}
+\paragraph{Prevention:}
+
+\subsubsection{Security Logging and Monitoring Failures (A09-2021)}
+\paragraph{Description:}It relates to the logging and monitoring capability to detect security breaches. You will make yourself vulnerable to information leakage by making logging and alerting events visible to the users.
+\paragraph{Prevention:} Ensure proper logging and monitoring.
+
+\subsubsection{Server-Side Request Forgery (A10-2021)}
+Already talked about at \ref{Server-Side Request Forgery}.
+
+\section{SQL Injection}
+\label{sec:sql-injection}
+\textbf{SQL injection} is a vulnerability that allows an attacker to \textbf{inject unintended SQL code} into \textbf{queries} executed by an application. Any software that constructs SQL queries using external input may be vulnerable to this type of attack.
+
+\begin{itemize}
+    \item \textbf{Severity}: very severe;
+    \item \textbf{Priority}: often high;
+    \item \textbf{Scope}: software that uses SQL;
+    \item \textbf{Technical impact}: unauthorized access to database contents and metadata, data modification or deletion, and potential privilege escalation;
+    \item \textbf{Worst-case scenario}: full system compromise (data exfiltration, administrative takeover, code execution via database features).
+\end{itemize}
+
+\subsection{Underlying idea}
+The application executes an SQL query where some parameters are taken from user input. For example:
+\begin{lstlisting}[language=SQL]
+SELECT * FROM users WHERE userId = <user_id> AND password = <user_password>;
+\end{lstlisting}
+If the application naively substitutes user-supplied values into the query, an attacker can craft input that changes the query semantics.
+
+\subsection{Example attack}
+Suppose the application builds the query by concatenation. If an attacker supplies:
+\begin{verbatim}
+user_id:    ' OR '1'='1
+user_password:    ' OR '1'='1
+\end{verbatim}
+the resulting query becomes:
+\begin{lstlisting}[language=SQL]
+SELECT * FROM users
+    WHERE userId = '' OR '1'='1'
+    AND password = '' OR '1'='1';
+\end{lstlisting}
+Because the boolean expression \texttt{'1'='1'} is always true, the WHERE clause may be satisfied for many rows, allowing the attacker to bypass authentication or access data they shouldn't.
+
+\subsection{SQL Injection type}
+\paragraph{In-Band SQL injection}
+In this technique, also called \textbf{CLASSICAL}, the attacker uses the same way to hack the database and get the data. The attacker has the possibility to \textbf{modify the original query} and receive the result from the database. This is composed of 3 variants:
+\paragraph{Classic SQL Injection:} basic and traditional version, seen in the previous example;
+
+\paragraph{Error-based SQL Injection:} relies on feeding \textbf{unexpected commands} or \textbf{invalid input}, with the goal of causing an error in the database server. If not set up correctly, the server can respond with \textbf{error messages}, that may contain details about the target system (i.e. database version, O.S., etc...). Knowing this information, the attacker can use specific vulnerabilities;
+
+\paragraph{Union-Base SQL Injection:} the user combines the queries and gets the results back as an HTTP response.
+\paragraph{Inferential SQL Injection}
+This type of injection, also called \textbf{BLIND}, does not show any error message. It's more difficult to exploit, as it returns information only when the application is given SQL payloads that return true or false responses from the server. By observing the responses, an attacker can extract sensitive information.
+
+\paragraph{Boolean Based:} the attacker observes the behavior of the database server and the application, after combining legitimate queries with malicious data, using boolean operators;
+
+\paragraph{Time Based:} the attacker observes the behavior of the database server and the application, after combining legitimate queries with SQL commands that cause time delays.
+
+\paragraph{Out-of-band SQL Injection:} this type of SQL injection is used when the application’s normal responses do not reveal useful information (for example, the application always returns the same page regardless of input, or error messages are suppressed). Instead of receiving data directly through the application channel, the attacker forces the database server to communicate with an external service that the attacker controls (for example via DNS or HTTP), and then collects the leaked data from that external channel.
+
+\subsection{SQL Injection mitigation}
+\begin{itemize}
+    \item \textbf{Escaping} all user supplied input. This means to treat all the data as plain text, rather than executable code or other harmful inputs;
+    \item Define a list of allowed inputs, to ensure only them are executed;
+    \item Use of prepared statements with parametrized queries. Programming languages allow to use  predefined structures to compose SQL queries by accepting only values of specified types.
+\end{itemize}
+\section{XSS (Cross-Site Scripting)}
+Cross-Site Scripting (XSS) attacks are a type of injection in which malicious scripts are injected into trusted websites. The end user's browser has no way to know that the script should not be trusted and will execute the script. It can access any cookies, session tokens or other sensitive information retained by the browser.
+\subsection{Underlying idea}
+The problem originates when the user input is directly displayed in an output web page, without any sanitization. The typical attack follows this flow:
+\begin{itemize}
+    \item The attacker identifies a web site with XSS vulnerabilities;
+    \item The attacker creates a malicious URL/ script sending malicious input to the attacker website;
+    \item The attacker tries to introduce the victim (user of the attacked website) to click on the URL;
+    \item The victim clicks the URL, executing the malicious code. The website response page includes malicious links or malicious JS code, executed on the victim's browser.
+\end{itemize}
+\subsection{XSS Types}
+\paragraph{Reflected (non-persistent)}
+User-supplied input is immediately returned by the web application — for example, in search results, error messages, or redirects — without being properly encoded or escaped for safe rendering in the browser. The payload is not stored on the server; instead, an attacker crafts a URL (or form) containing the payload and convinces a victim (for example, via social engineering) to visit it. When the victim follows the link, the server responds with a page that includes the malicious code, which then executes in the victim's browser.
+
+\paragraph{Example:}
+\begin{verbatim}
+https://example.com/search?q=<script>Malicious script here</script>
+\end{verbatim}
+The server responds with a webpage that includes the parameter \verb|q| directly; in this case, the script is executed in the victim's browser.
+
+\paragraph{Stored (persistent)}
+User-supplied input is stored on the target server (for example, in a database, profile field, comment, or message) and later served to other users without proper encoding or sanitization. Because the malicious payload is persisted, any user who views the affected page may receive content that contains executable script, which will run in that user's browser.
+
+\paragraph{Example:}
+\begin{verbatim}
+<!-- User submits comment containing: -->
+<div>Nice post!</div><script>alert('xss')</script>
+
+<!-- Application stores the comment and later renders it verbatim: -->
+<div class="comment">
+  <div>Nice post!</div><script>alert('xss')</script>
+</div>
+\end{verbatim}
+When other users load the page that lists comments, the server includes the stored comment directly in the HTML, and the script executes in each viewer's browser.
+\paragraph{DOM-based}
+A form of XSS in which the entire unsafe data flow occurs in the browser: client-side JavaScript reads attacker-controlled data (for example from the URL fragment, query string, \texttt{window.name}, or \texttt{postMessage}) and then unsafely writes it into the DOM, causing execution — without the payload ever being reflected or stored by the web server.
+
+\paragraph{Vulnerable example (client-side)}
+\begin{verbatim}
+<!-- index.html (static) -->
+<div id="msg"></div>
+<script>
+  // attacker-controlled: location.hash
+  const frag = location.hash.substring(1);
+  // UNSAFE: inserts raw HTML from the fragment
+  document.getElementById('msg').innerHTML = frag;
+</script>
+\end{verbatim}
+\subsection{XSS mitigation}
+No single technique can solve XSS, but rather a combination of strategies is required:
+\begin{itemize}
+    \item \textbf{Treat all input as untrusted:} Any data coming from an external source — including users, third-party services, or even other internal systems — must be treated as untrusted.
+    \item \textbf{Contextual escaping / encoding:} Always escape or encode user input according to the context in which it will appear (HTML body, HTML attribute, JavaScript, CSS, URL, etc.). Use the framework’s built-in escaping functions whenever possible.
+    \item \textbf{Sanitize HTML if necessary:} If user input needs to include HTML (i.e., formatted comments), use a whitelist-based sanitizer that removes unsafe tags and attributes.
+    \item \textbf{Server-side validation:} Validate input for expected format, type, or length. Note that validation alone is insufficient; always combine it with encoding or escaping on output.
+\end{itemize}
+\section{Request Forgery}
+\subsection{HTTP and Cookies introduction}
+HTTP is a protocol that only allows communication using \textbf{request} and \textbf{responses}. It's considered \textbf{stateless}, meaning that natively, it doesn't allow to preserve the state of a user.
+\\Typically, the \textbf{state} is usually maintained via the use of \textbf{cookies}, sent by the server to the client's browser. They typically contain information to identify the client, but are also used for:
+\begin{itemize}
+    \item \textbf{Identify and authenticate} the logged on users and the corresponding session;
+    \item \textbf{Track} the user actions and navigation;
+    \item \textbf{Maintain information} regarding user interaction (ex: item in the shopping cart).
+\end{itemize}
+Cookies are \textbf{stored in the client-side}. It could be possible to:
+\begin{itemize}
+    \item \textbf{Predictable information}: attackers may guess session IDs or other values.
+    \item \textbf{Compromise or leakage}: confidential data like passwords could be exposed.
+    \item \textbf{Long expiration}: cookies may persist too long, increasing risk if stolen.
+    \item \textbf{Client-side access}: JavaScript can read/modify cookies if \texttt{HttpOnly} is not set.
+    \item \textbf{Interception}: cookies can be stolen through proxy or man-in-the-middle attacks if \texttt{Secure} is not set (i.e., not restricted to HTTPS).
+\end{itemize}
+\paragraph{Session:}
+A session is a frame of \textbf{HTTP} communication in which the user \textbf{data are stored in the server}, instead of the client. The \textbf{session identifiers} are unique numbers, used to \textbf{identify every user}. They link the user with their information on the server. Cookies are often used to share the session identifiers.
+
+\subsection{Session Hijacking}
+An authorized user logs into a website, the web server generates and stores in the client a \textbf{session cookie}.
+While the user is connected to the website, an attacker can steal their session ID. Now, the attacker can use this piece of information to sign into the website as the authorized user, without being detected.
+\paragraph{How?}
+There are many ways in which an attacker could steal session IDs:
+\begin{itemize}
+    \item \textbf{Traffic sniffing}: attackers can \textbf{intercept} HTTP communications between the web server and a client. This is typically defined as a \textbf{Man In the Middle} (MITM) attack and it's only feasible if cookies are sent over using plain HTTP (No HTTPS);
+    \item \textbf{Session fixation}: attackers can forge a valid, but unused session ID, and then convince an authenticated user into using that ID. The attacker can then access to the user's session;
+    \item \textbf{Malware / Trojan injection}: attacker can use a malware to monitor the user activity and steal data, such as the session IDs;
+    \item \textbf{XSS}: attacker can exploit the XSS vulnerability to leak the cookie information;
+    \item \textbf{Brute force}: attackers can predict the value of the cookie. 
+\end{itemize}
+\paragraph{Prevention}
+\begin{itemize}
+    \item Use \textbf{encrypted} communication channels, to prevent MITM attacks;
+    \item Don't pass the session IDs as a URL parameter;
+    \item When defining a cookie, this guidelines should be followed:
+    \begin{itemize}
+        \item Use an \textbf{adequate algorithm} to generate session IDs. They should have an adequate length and randomness;
+        \item Set a short \textbf{expiration time};
+        \item Set HttpOnly parameter to true (no access in the cookie in the client);
+        \item Set Secure to true (cookie is only transmitted via secure channels).
+    \end{itemize}
+\end{itemize}
+\subsection{Cross-Site Request Forgery}
+Cross-Site Request Forgery (CSRF) is an attack in which an attacker tricks a victim’s browser into 
+sending unauthorized requests to a trusted web application in which the victim is already authenticated. 
+\\\\The user is lured into visiting a malicious website through social engineering. 
+That malicious website causes the victim’s browser to send crafted requests to the target application. 
+These requests inherit the victim’s identity and permissions, allowing the attacker to perform 
+actions on behalf of the victim (i.e., changing account settings, performing transactions). 
+\\\\In this attack, the victim is effectively used as a proxy between the attacker and the web server. It's typically used to perform legitimate, but unauthorized actions on the legitimate user account.
+\paragraph{Fixing CSRF}
+\textbf{Anti-CSRF token} is a secure, random value generated by the server and inserted into forms or requests to prevent unauthorized actions. The basic idea is that, for every sensitive action, 
+the server must verify that the request was intentionally generated by the authenticated user 
+and not by an attacker.
+\\Also, we could possibly protect this type of actions by prompting another login form. This way, only the authorized user can access those pages.
+
+\subsection{Server-Side Request Forgery}
+SSRF attack involves an attacker who can \textbf{abuse server functionality} access or modify resources. 
+\begin{itemize}
+    \item An attacker can send a request from the backend of the software, to another server;
+    \item The server that receives the request believes that the request came from the application, and it's legitimate;
+\end{itemize}
+It's based on the existence of a trust relation between the servers and of a vulnerability, that allows attackers to abuse such trust relation. The attacker uses the server as a proxy to access data stored in the same server, but not accessible by common users.
+\paragraph{Example}
+An application queries a server-internal service to obtain current weather forecasts. The application passes a URL containing the API request from the browser to the server.
+\begin{verbatim}
+POST /forecasts HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 250
+
+weatherApi=http://weatherapp.com/forecasts/
+check%3FcurrentDateTime%3D6%26cityId%3D1
+\end{verbatim}
+This causes the server to make a request to the specified external URL, retrieve the weather forecast, and return the information to the user.
+\\\\An attacker can modify the request to specify a URL that points to a local resource on the server itself.
+\begin{verbatim}
+POST /forecasts HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 1100
+
+weatherApi=http://localhost/admin
+\end{verbatim}
+The server, executing the request internally, accesses the URL \texttt{http://localhost/admin}. This may cause the server to expose sensitive information (i.e., configuration files or admin panels) that are normally inaccessible from outside. Because the request is executed from within the trusted, it bypasses traditional access controls and security boundaries.
+\paragraph{Identification}
+To identify this type of issues, it's important to understand how data flows. Determine how user-supplied input (i.e., URL parameters) is propagated to server-side components that perform outbound connections.
+\\To discover this type of issue this methods can be applied:
+\begin{itemize}
+        \item \textbf{Spider the web:} crawl the application to find forms, endpoints and parameters that may accept URLs.
+        \item \textbf{Search requests for URL-like parameters:} look for parameter names such as \texttt{url} or \texttt{=http}.
+        \item \textbf{Inject SSRF payloads:} submit controlled URLs (i.e., pointing to an attacker-controlled domain) and inspect the server’s behavior and responses.
+    \end{itemize}
+\paragraph{Mitigation}
+\begin{itemize}
+    \item \textbf{Validate} request and response also from \textbf{internal services};
+    \item \textbf{Add authentication} also for internal and third-party services that don't have it by default;
+    \item Have a \textbf{whitelist} of IP addresses allowed to do internal requests;
+\end{itemize}
+
+\section{Command Injection}
+Command injection is an attack in which an attacker's goal is the \textbf{arbitrary execution of commands} on the \textbf{host operating system}.
+
+\paragraph{Problem:} Untrusted external data is directly passed to a command interpreter. If the data is crafted to include commands, those commands may be executed and the interpreter may be forced to perform actions beyond its intended function.
+
+\paragraph{Underlying conditions:} For command injection to succeed, the application typically meets three main conditions:
+\begin{itemize}
+    \item the application has the \textbf{privileges/permissions} to execute system commands;
+    \item the application uses \textbf{user-provided data} as part of a system command;
+    \item the user-provided data is not properly \textbf{escaped} or \textbf{sanitized} before use.
+\end{itemize}
+
+\paragraph{Mitigation:}
+\begin{itemize}
+    \item Avoid invoking shell/OS execution functions when possible;
+    \item Treat all external input as untrusted: validate, normalize, and apply \textbf{whitelisting} where feasible;
+    \item Use \textbf{parameterized APIs} or pass user input as separate arguments rather than concatenating it into command strings.
+    \item Run the application with the \textbf{least privileges} necessary to reduce the impact of a successful attack.
+\end{itemize}
+
+\section{File access}
+\subsection{File Inclusion}
+File inclusion vulnerabilities can affect applications that rely on \textbf{run-time tasks} that work with \textbf{files} (i.e. when an application allows users to access files, submit input into files, upload files to the server).
+
+\paragraph{Local File Inclusion (LFI):}
+LFI attack occurs when an application uses the path to a local file as input. It aims at forcing the application to expose or run files on the server.
+
+\paragraph{Remote File Inclusion (RFI):}
+RFI attack occurs when an application dynamically references external resources, such as files or scripts. It aims at \textbf{exploiting the referencing function} to \textbf{upload a malware} from a remote URL.
+
+\subsection{Directory Traversal:}
+\label{Dir-Traversal}
+A path traversal (directory traversal) attack aims to access files and directories that are stored outside the web server's document root. If the web server is misconfigured, an attacker may be able to modify the path in the URL (for example, using sequences like ``\texttt{../}'' or encoded variants) to access files the application did not intend to expose.
+
+\subsection{File Binding}
+Often, file names are used to bind a file to a program object. However, every time a file name is referenced in an operation, this binding is reasserted — meaning that the program may end up operating on a different file if the file name has been changed or replaced in the meantime.  
+Therefore, checks are required to ensure that the intended file is actually being accessed.  
+\\\\It is recommended to access files using \textbf{file descriptors} rather than just file names, as they provide a higher degree of certainty about which file object is actually being acted upon.
+
+\subsection{TOCTOU (Time Of Check, Time Of Use)}
+\textbf{Time Of Check, Time Of Use (TOCTOU)} is a race condition that occurs when an application performs:
+\begin{itemize}
+    \item a \textbf{check operation}, to verify the existence or state of a file at time $t$;
+    \item a \textbf{use operation}, to read or write data at a later time $t + \Delta t$.
+\end{itemize}
+If another process modifies or deletes the file between the check and the use, the application may operate on an unintended or invalid file, leading to race conditions or security vulnerabilities.
+\\\\A more effective solution involves using \textbf{atomic operations} and accessing files via \textbf{file descriptors}, which ensures that the file being operated on is the same one that was originally opened.
+\subsection{Mitigation}
+\begin{itemize}
+    \item Avoid the use of user inputs within the \textbf{file system calls};
+    \item If forced to use user input for file operations, resolve and validate the paths;
+    \item Use file descriptors, rather than filenames.
+\end{itemize}
+
+\section{Error Handling}
+Error handling is a mechanism used to detect and manage errors that occur during the execution of a program. It allows the application to recover gracefully from unexpected conditions and avoid crashes. Proper error handling is an essential part of an application's overall security.
+
+\paragraph{Problem:}
+Improper error handling occurs when software fails to correctly handle certain error conditions, leaving the program in an insecure or unstable state.  
+This can lead to program crashes (potentially causing a \textbf{Denial of Service}) or unintentional disclosure of sensitive information such as stack traces, file paths, or internal logic — all of which may help an attacker gather useful insights about the system.
+
+\paragraph{Mitigation:}
+\begin{itemize}
+    \item Always handle errors and exceptions appropriately, considering the specific context of each case;
+    \item Avoid displaying detailed error messages to end users — log them securely instead;
+    \item Do not silently ignore or mask exceptions, as this can hide critical failures and lead to unpredictable behavior;
+    \item Always check the return value or status code of functions and system calls for possible errors;
+\end{itemize}
+
+\section{Insecure Direct Object Reference (IDOR)}
+Insecure Direct Object Reference (IDOR) is a type of \textbf{access control vulnerability} that occurs when an application uses user-supplied input to access internal objects directly, without proper authorization checks.  
+This happens when a developer exposes a reference to internal implementation objects — such as files, database records, or keys — without adequate validation, allowing attackers to manipulate those references and gain unauthorized access to data or functionality.
+
+\paragraph{How:}
+\begin{itemize}
+    \item \textbf{URL tampering:} modifying the value of a parameter directly in the browser's address bar (e.g., changing \texttt{user\_id=123} to \texttt{user\_id=124});
+    \item \textbf{Body manipulation:} similar to URL tampering, but the attacker modifies parameters in the request body (e.g., in POST or PUT requests);
+    \item \textbf{Path traversal:} already discussed in Section~\ref{Dir-Traversal};
+    \item \textbf{Cookie or JSON ID manipulation:} if the application is vulnerable to IDOR, an attacker can alter identifiers stored in cookies or JSON payloads to access other users' data.
+\end{itemize}
+
+\section{Client-side vulnerabilities}
+\subsection{Validation}
+\textbf{Client-side validation bypass} refers to techniques used to circumvent validation checks performed on the \textbf{client side}.  
+When the server relies solely on protection mechanisms implemented in the client, an attacker can modify the client’s behavior to bypass these mechanisms, leading to unexpected or unauthorized interactions between the client and the server.
+
+\paragraph{How:}
+\begin{itemize}
+    \item Modifying the HTML code directly (e.g., removing input restrictions or changing field attributes);
+    \item Using JavaScript to alter form data before submission;
+    \item Using proxies or intercepting tools to capture and modify HTTP requests.
+\end{itemize}
+
+\paragraph{Mitigation:}
+All validation performed on the front-end must also be enforced on the backend.  
+Client-side checks are still useful to improve user experience and reduce server load, but they should never be considered a security mechanism.
+
+\subsection{Data Filtering}
+The problem arises when an application sends all the data to the client and performs filtering only on the client side.  
+This approach allows users to access information that should remain hidden, creating a potential access control vulnerability.
+\\\\It is a good practice to send the client only the data they are authorized to access. Exposing excessive or unnecessary information can lead to serious security risks and data leakage.
+
+\subsection{HTML tampering and Injection}
+HTML injection is a type of injection vulnerability that occurs when an attacker can control an input point and inject arbitrary HTML (or script) into a page.  
+The targeted browser cannot reliably distinguish between legitimate and malicious parts of the page, which can lead to content manipulation, UI spoofing, or cross-site scripting (XSS).
+
+\paragraph{Problem:}
+Untrusted input is directly embedded in HTML output (for example via \texttt{document.write} or unsanitized template insertion). If the input contains markup or script, the browser will render and execute it in the context of the vulnerable page.
+
+\paragraph{Unsafe example:}
+\begin{verbatim}
+var userposition = location.href.indexOf("user=");
+var user = location.href.substring(userposition + 5);
+document.write("<h1>Hello, " + user + "</h1>");
+\end{verbatim}
+To exploit the vulnerabilities, specific url must be built, using for example:
+\begin{verbatim}
+http://vulnerable.site/page.html?user<img%20src='aaa'%20onerror=alert(1)>
+\end{verbatim}
+\paragraph{Use:}
+\begin{itemize}
+  \item \textbf{Defacing} — modify visible page content to mislead or damage reputation.
+  \item \textbf{Exfiltrating anti-CSRF tokens} — force the browser to render attacker-supplied markup that exposes hidden tokens.
+  \item \textbf{Exfiltrating stored credentials} — inject forms that may be auto-filled by password managers and thus stolen.
+\end{itemize}
+
+\section{Overflow}
+
+\subsection{Introduction}
+\label{introduction-to-overflow}
+The memory of a process is divided into several distinct areas, each serving a specific purpose for data storage and program execution. It can be generally divided as follows:
+\begin{itemize}
+    \item \textbf{Reserved memory area}: contains the machine instructions and data reserved for the operating system;
+    \item \textbf{Text area}: stores the assembly instructions of the program currently being executed;
+    \item \textbf{Static data area}: contains global and static variables declared in the program;
+    \item \textbf{Heap}: a dynamic memory area, managed by the developer. It contains dynamically allocated data and variables created during runtime;
+    \item \textbf{Stack}: keeps track of active functions, their parameters, return addresses, and local variables.
+\end{itemize}
+
+\subsection{Buffer Overflow}
+A \textbf{buffer overflow} occurs when a program attempts to write more data into a fixed-length memory buffer than it can hold.
+\\Since user data and control flow information are mixed together in the memory, the user data exceeding a buffer may corrupt other data and control flow information.
+
+\paragraph{Spotting buffer overflow:} The following conditions frequently lead to buffer overflow vulnerabilities:
+\begin{itemize}
+    \item input originates from untrusted sources (network, files, or command line);
+    \item the input is copied or transferred into internal structures such as fixed-size buffers;
+    \item data or strings are manipulated using \textbf{unsafe functions} that do not perform bounds checking (for example: \texttt{strcpy}, \texttt{strcat}, \texttt{gets}).
+\end{itemize}
+Vulnerabilities of this kind can be detected using dynamic testing techniques such as fuzzing.
+
+\paragraph{Fixing buffer overflow:}
+When working with strings, always use safe versions of the needed functions, that take into account the count of characters to work on. Always check loop termination and array boundaries.
+
+\subsection{String format vulnerabilities}
+A \textbf{non-verified string} used as a format string may allow an attacker
+to inject format specifiers (for example \texttt{\%s}, \texttt{\%x}) that read values
+from the stack. This becomes possible when a formatting function accepts a
+variable number of arguments (ellipsis), e.g.
+\begin{verbatim}
+    int printf(const char *format, ...);
+\end{verbatim}
+Passing untrusted input directly as the \texttt{format} parameter is unsafe because
+the attacker can control how the function interprets stack contents.
+
+\paragraph{Fixing string formats:} always sanitize user input before using it as a format string. Use constant strings whenever possible and avoid the use of unsafe functions, such as 
+\begin{verb} 
+printf();
+\end{verb}
+\subsection{Integer overflow}
+\paragraph{2's complement notation:}
+Integers are usually represented using the \textbf{two's complement} notation.  
+Given a sequence of $n$ bits, the representable range of values is:
+\[
+[-2^{n-1}, 2^{n-1}-1]
+\]
+This means that, when working with signed integers, exceeding the upper or lower
+limit of this range causes the value to \textbf{wrap around} to the opposite side
+of the range.
+
+\paragraph{Example:}
+For an 8-bit signed integer:
+\[
+[-128, 127]
+\]
+Adding $1$ to $127$ results in $-128$:
+\[
+127 + 1 = -128
+\]
+Similarly, subtracting $1$ from $-128$ results in $127$.
+
+\paragraph{Causes and risks:}
+Integer overflow occurs when an arithmetic operation produces a value outside
+the representable range of the integer type.  
+In C and C-like languages, this can happen due to:
+\begin{itemize}
+    \item arithmetic operations (\texttt{+}, \texttt{-}, \texttt{*});
+    \item insufficient range checking on user-controlled input (e.g., array indices, buffer sizes, loop counters).
+\end{itemize}
+
+\paragraph{Fix integer overflow:}
+\begin{itemize}
+    \item Use sufficiently large integer types (\textbf{short} = 16 bits, \textbf{int} = 32 bits, \textbf{long} = 64 bits);
+    \item Explicitly check arithmetic operations that may exceed type limits, by comparing with data type limit;
+\end{itemize}
+
+\subsection{Heap overflow}
+As described in Chapter \ref{introduction-to-overflow}, the heap is a dynamic
+memory area managed at runtime. Incorrect use can cause \textbf{heap overflows},
+which may crash the application or corrupt heap metadata. This can happen when:
+\begin{itemize}
+    \item allocating excessively large buffers without validating sizes;
+    \item repeatedly allocating memory and failing to free it (memory leaks) combined with unchecked writes;
+    \item writing beyond the bounds of a dynamically allocated buffer (off-by-one, missing length checks).
+\end{itemize}
+
+\subsection{Final remarks and barriers}
+\paragraph{Base attack pattern:} usually \textbf{overflow-based} attacks follow these steps:
+\begin{enumerate}
+    \item \textbf{Inject attack code} into the buffer. Code that is already in the program can be used or otherwise, code can be injected;
+    \item \textbf{Redirect control flow} to the injected code. This way the execution jumps to the malicious code;
+    \item \textbf{Execute} the attack code.
+\end{enumerate}
+\paragraph{Barriers to exploitation:} there are 4 main approaches to barriers the exploitation of this vulnerability:
+\begin{itemize}
+    \item \textbf{Address space} layout randomization: use a form of randomization to store data in the memory. This way, we cannot know the location of certain functions;
+    \item \textbf{Canaries}: fixed-byte known values, placed between a buffer and control data on the stack. This way, when the buffer overflows, the first data to be corrupted will be this fixed data, alerting of the overflow;
+    \item \textbf{Executable space protection (ESP)}: marks regions as non-executable. Any attempt to execute machine code in these regions will cause an exception;
+    \item \textbf{testing}: fuzzing and static analysis can be used to detect this type of vulnerability.
+\end{itemize}
+\section{Static Analysis and Testing}
+Software analysis and testing are applied to detect security issues. These are usually driven by the programmer's experience to recognize patterns and situations in the code. Its automation is a key aspect if we want to build \textbf{secure software projects}.
+
+\paragraph{Verification:} check the consistency of the implementation with a specification. This phase usually checks for the presence of bugs in the application.
+The target of the verification can be different (unit testing, set of units, system testing) and for each target, different types of analysis must be done;
+\paragraph{Validation:} check the degree at which a software system fulfills the customer requirements.
+
+\subsection{Dynamic analysis (or Testing)}
+Software testing concerns \textbf{exercising the software} and observing the behavior and the produced output.
+\begin{itemize}
+    \item Test data are needed to execute the software;
+    \item Can reveal the presence of errors, not their absence
+\end{itemize}
+To conduct Dynamic analysis, firstly test cases must be identified to test the software under stress.
+\begin{itemize}
+    \item They are based on specifically defined input data;
+    \item An \textbf{oracle} that describes what the system is supposed to do is needed. It will be used to check program results.
+\end{itemize}
+
+\subsection{Static analysis}
+Static analysis examines the software’s source code or documentation \textbf{without executing the program}.  
+\begin{itemize}
+    \item Both code and design documents can be analyzed;
+    \item It can demonstrate the absence of specific classes of errors.
+\end{itemize}
+In this context, the \textbf{test oracle} is the tool’s input — a set of desired
+properties or correctness rules that the program must satisfy.
+
+Several \textbf{approaches to static analysis} exist, each with different goals and levels of automation:
+\begin{itemize}
+    \item \textbf{Model checking}: it is difficult to define both the model and its properties, but once specified, the verification process can be fully automated;
+    \item \textbf{Pattern-based analysis}: enforces coding practices or policies by matching code against known patterns, templates, or weaknesses. It is easy to apply but often limited in precision;
+    \item \textbf{Flow-based static analysis}: simulates the logical execution of the program to track data propagation and its effect on control flow. It does not depend on user input and can identify data-dependent bugs.
+\end{itemize}
+
+Typically, these tools approximate the program’s reachable states with a more computationally feasible representation.  
+\textbf{Under-approximation} is commonly used — every property that holds in the approximation also holds in the real software — thereby preventing false positives.
+
+\paragraph{Pros:}
+\begin{itemize}
+    \item Scales well with the size of the codebase;
+    \item Establishes properties for all possible executions of a program;
+    \item Produces explanations for why a property may not hold;
+    \item Can detect faults that are difficult to find through traditional testing.
+\end{itemize}
+
+\paragraph{Cons:}
+\begin{itemize}
+    \item Scalability and effectiveness depend heavily on the chosen representation and approximation;
+    \item Non-trivial semantic properties are undecidable.
+\end{itemize}
+
+
+\subsection{Flow analysis}
+Several models can be used to describe an application and represent its code.  
+Different models may emphasize different aspects of program behavior — such as \textbf{control flow} or \textbf{data dependence}. 
+\\\textbf{Flow analysis} focuses on understanding how information moves through the program.  
+By analyzing both control and data dependencies, it helps identify relationships among variables, track how data values are produced and consumed, and evaluate the effects of data changes across the codebase.  
+\\\\Program analysis and test design techniques often leverage data flow information to enhance their effectiveness.  
+
+\subsection{Control-flow graph}
+A \textbf{Control-Flow Graph (CFG)} is defined as follows:
+\[
+CFG = (N, E, n_e, n_x)
+\]
+\begin{itemize}
+    \item $N$: \textbf{set of nodes}, one for each \textbf{statement} (instruction) of the program;
+    \item $E \subseteq N \times N$: \textbf{set of edges}, where $(n, m) \in E$ if statement $m$ can be executed immediately after $n$;
+    \item $n_e$: \textbf{entry node} of the program;
+    \item $n_x$: \textbf{exit node} of the program.
+\end{itemize}
+
+\paragraph{Path:} represents a possible program execution. It is composed of a sequence of nodes and edges starting from the entry node and ending at a terminal node.
+
+\paragraph{Linearly independent path:} a path is \textbf{linearly independent} if it introduces at least one new edge that has not been traversed by any previously defined path.  
+These paths are used to identify distinct behaviors implemented in a program. Typically, a test case should be defined to verify each independent path.
+\subsubsection{Def-Use pairs}
+A \textbf{def-use pair} associates a point in a program code where a value is defined with a point where it's used.
+\paragraph{Definition:} where a variable gets a value:
+\begin{itemize}
+    \item Declaration;
+    \item Initialization;
+    \item Assignment;
+    \item Values received by a parameter.
+\end{itemize}
+\paragraph{Use:} extraction of a value from a variable:
+\begin{itemize}
+    \item Expressions;
+    \item Conditional statements;
+    \item Parameter passing;
+    \item returns.
+\end{itemize}
+\paragraph{Def-clear path:} a path along the CFG from a definition to a use of the same variable, without another definition of the variable in between.
+
+\subsubsection{Data Dependence Graph}
+A direct data dependence graph is defined using the two definitions  we just gave:
+\begin{itemize}
+    \item Its nodes are the same as in the CFG;
+    \item Its edges are the def-use pairs.
+\end{itemize}
+This graph can be used to identify \textbf{data dependence}, where values are from.
+\subsubsection{Control Dependence Graph}
+Also a \textbf{control dependence graph} can be defined as follows:
+\begin{itemize}
+    \item Its nodes are the same as the same as in the CFG;
+    \item Its edges are unlabeled, direct control dependencies.
+\end{itemize}
+This type of graph shows \textbf{control dependence}: which \textbf{statement controls} whether a statement is executed or not. 
+\subsection{Data-Flow analysis}
+\subsubsection{Reaching definition}
+There is an association $(d,u)$ between a \textbf{definition of a variable} \verb|v| at code statement $d$ and a \textbf{use of variable} \verb|v| at code statement $u$ iff:
+\begin{itemize}
+    \item there is at least one control flow path from $d$ to $u$;
+    \item there is no intervening definition of \verb|v|.
+\end{itemize}
+In this case, we say that $v_d$ \textbf{reaches} $v_u$.
+
+\paragraph{Normal graph exploration}
+Even if we consider a loop-free path, the number of paths can be exponentially larger than the number of nodes and edges. Practical algorithms therefore do not search every individual path. Instead, they summarize the reaching definitions at a node over all the paths reaching that node.
+
+\paragraph{DF Algorithm:} an efficient algorithm for \textbf{computing reaching definitions}, and other properties, is based on the way \textbf{reaching definitions} at one node are related to the one of its adjacent nodes.
+\\\\Suppose we are calculating the \textbf{reaching definitions} of node $n$, and there is an edge $(p,n)$ from an immediate predecessor, node $p$:
+\begin{itemize}
+    \item if the predecessor node $p$, assigns a value to a variable \verb|v|, then the definition $v_p$ \textbf{reaches} $n$;
+    \item If a definition $v_p$ of a variable \verb|v| reaches a predecessor node $p$, then the definition is propagated on from p to n. 
+\end{itemize}
+\paragraph{Formal definition:} we can formally define the idea expressed by the algorithm we just cited. At each node $n$, we have:
+\begin{itemize}
+    \item \textbf{Reaching definitions} $(In(n))$: definitions flowing out of th predecessor nodes $m$. Can be defined as
+    \[\bigcup_{m\in pred(n)} Out(m)\]
+    \item \textbf{Out flow} $Out(n)$: the output of a node n can formally be defined as:
+    \[Out(n) = In(n) \setminus Kill(n) \cup Gen(n) \]
+    Where:
+    \begin{itemize}
+        \item $Gen(n) = \{v_n| v\text{ is defined or modified at }n\}$
+        \item $Kill(n) = \{v_x| v \text{ is defined or modified at x AND } v \text{ is modified at} n\}$
+    \end{itemize}
+\end{itemize}
+\subsubsection{Meet over path}
+Another solution for data-flow analysis is the \textbf{Meet Over Path} (MOP).
+\\At a node $n$, the MOP is defined as:
+\[MOP[n] = \bigwedge_{p\in P_{n}} f_p(T)\]
+where:
+\begin{itemize}
+    \item $P_n$ the set of all path from the entry node to node n;
+    \item $f_p$ is the composition of transfer function along path $p$;
+    \item $T$ is the initial information
+    \item $\wedge$ represents the meet operator.
+\end{itemize}
+\paragraph{Exact solution:} the exact solution requires, instead of considering all path from the entry node, to the node n, to just consider the \textbf{feasible paths}.
+\[EX[n] = \bigwedge_{p\in feas(P_{n})} f_p(T)\]
+This is an \textbf{undecidable} problem.
+
+\section{Taint Analysis}
+Taint analysis is one possible solution of the data-flow analysis problem. It aims to track the flow of sensitive information through a program and identify potential security vulnerabilities.
+\\To understand how taint analysis works, we need to define some concepts:
+\begin{itemize}
+    \item a variable is considered \textbf{tainted} if it contains data from an untrusted source (for example, user input), and has not yet been sanitized or validated;
+    \item a variable is considered \textbf{untainted} if it has been properly sanitized or validated.
+\end{itemize}
+\paragraph{Source:} a source is the point of the program where a tainted variable is defined. This could be user input, data read from a file, or any other untrusted data.
+\paragraph{Sink:} a sink is the point of the program where a tainted variable is used in a potentially dangerous way, such as being passed to a system call or used in a database query.
+
+\end{document}
