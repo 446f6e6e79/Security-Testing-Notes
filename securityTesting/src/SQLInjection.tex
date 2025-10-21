@@ -1,6 +1,7 @@
 \section{SQL Injection}
 \label{sec:sql-injection}
-\textbf{SQL injection} is a vulnerability that allows an attacker to \textbf{inject unintended SQL code} into \textbf{queries} executed by an application. Any software that constructs SQL queries using external input may be vulnerable to this type of attack.
+\textbf{SQL injection} is a vulnerability that allows an attacker to \textbf{inject unintended SQL code} into \textbf{queries} executed by an application. 
+Any software that constructs SQL queries using external input may be vulnerable to this type of attack.
 
 \begin{itemize}
     \item \textbf{Severity}: very severe;
@@ -34,19 +35,22 @@ Because the boolean expression \texttt{'1'='1'} is always true, the WHERE clause
 \subsection{SQL Injection type}
 \paragraph{In-Band SQL injection}
 In this technique, also called \textbf{CLASSICAL}, the attacker uses the same way to hack the database and get the data. The attacker has the possibility to \textbf{modify the original query} and receive the result from the database. This is composed of 3 variants:
-\paragraph{Classic SQL Injection:} basic and traditional version, seen in the previous example;
+\begin{itemize}
+    \item \textbf{Classic SQL Injection:} basic and traditional version, seen in the previous example;
+    \item \textbf{Error-Based SQL Injection:} the attacker makes the database produce error messages that can help to gather information about the database structure.
+    \item \textbf{Union-Based SQL Injection:} the attacker uses the \texttt{UNION} SQL operator to combine the results of the original query with the results of a malicious query.
+\end{itemize}
 
-\paragraph{Error-based SQL Injection:} relies on feeding \textbf{unexpected commands} or \textbf{invalid input}, with the goal of causing an error in the database server. If not set up correctly, the server can respond with \textbf{error messages}, that may contain details about the target system (i.e. database version, O.S., etc...). Knowing this information, the attacker can use specific vulnerabilities;
-
-\paragraph{Union-Base SQL Injection:} the user combines the queries and gets the results back as an HTTP response.
 \paragraph{Inferential SQL Injection}
-This type of injection, also called \textbf{BLIND}, does not show any error message. It's more difficult to exploit, as it returns information only when the application is given SQL payloads that return true or false responses from the server. By observing the responses, an attacker can extract sensitive information.
+This type of injection, also called \textbf{BLIND}, does not show any error message. It's more difficult to exploit, as it returns information 
+only when the application is given SQL payloads that return true or false responses from the server. 
+By observing the responses, an attacker can extract sensitive information.
 
-\paragraph{Boolean Based:} the attacker observes the behavior of the database server and the application, after combining legitimate queries with malicious data, using boolean operators;
-
-\paragraph{Time Based:} the attacker observes the behavior of the database server and the application, after combining legitimate queries with SQL commands that cause time delays.
-
-\paragraph{Out-of-band SQL Injection:} this type of SQL injection is used when the application’s normal responses do not reveal useful information (for example, the application always returns the same page regardless of input, or error messages are suppressed). Instead of receiving data directly through the application channel, the attacker forces the database server to communicate with an external service that the attacker controls (for example via DNS or HTTP), and then collects the leaked data from that external channel.
+\begin{itemize}
+    \item \textbf{Boolean Based:} the attacker observes the behavior of the database server and the application, after combining legitimate queries with malicious data, using boolean operators;
+    \item \textbf{Time Based:} the attacker observes the behavior of the database server and the application, after combining legitimate queries with SQL commands that cause time delays.
+    \item \textbf{Out-of-Band:} this technique is used when the attacker is not able to use the same channel to launch the attack and gather information.
+\end{itemize}
 
 \subsection{SQL Injection mitigation}
 \begin{itemize}

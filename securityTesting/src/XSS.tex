@@ -1,51 +1,56 @@
 \section{XSS (Cross-Site Scripting)}
-Cross-Site Scripting (XSS) attacks are a type of injection in which malicious scripts are injected into trusted websites. The end user's browser has no way to know that the script should not be trusted and will execute the script. It can access any cookies, session tokens or other sensitive information retained by the browser.
+\textbf{Cross-Site Scripting} (XSS) attacks are a type of injection in which \textbf{malicious scripts} are injected into trusted websites. The end user's browser has no way to know that the script should not be trusted and will execute the script. It can access any cookies, session tokens or other sensitive information retained by the browser.
 \subsection{Underlying idea}
-The problem originates when the user input is directly displayed in an output web page, without any sanitization. The typical attack follows this flow:
-\begin{itemize}
+The problem originates when the \textbf{user input} is directly \textbf{displayed in an output web page}, without any sanitization. The typical attack follows this flow:
+\begin{enumerate}
     \item The attacker identifies a web site with XSS vulnerabilities;
     \item The attacker creates a malicious URL/ script sending malicious input to the attacker website;
     \item The attacker tries to introduce the victim (user of the attacked website) to click on the URL;
     \item The victim clicks the URL, executing the malicious code. The website response page includes malicious links or malicious JS code, executed on the victim's browser.
-\end{itemize}
+\end{enumerate}
+
 \subsection{XSS Types}
-\paragraph{Reflected (non-persistent)}
-User-supplied input is immediately returned by the web application — for example, in search results, error messages, or redirects — without being properly encoded or escaped for safe rendering in the browser. The payload is not stored on the server; instead, an attacker crafts a URL (or form) containing the payload and convinces a victim (for example, via social engineering) to visit it. When the victim follows the link, the server responds with a page that includes the malicious code, which then executes in the victim's browser.
-
-\paragraph{Example:}
-\begin{verbatim}
-https://example.com/search?q=<script>Malicious script here</script>
-\end{verbatim}
-The server responds with a webpage that includes the parameter \verb|q| directly; in this case, the script is executed in the victim's browser.
-
-\paragraph{Stored (persistent)}
-User-supplied input is stored on the target server (for example, in a database, profile field, comment, or message) and later served to other users without proper encoding or sanitization. Because the malicious payload is persisted, any user who views the affected page may receive content that contains executable script, which will run in that user's browser.
-
-\paragraph{Example:}
-\begin{verbatim}
-<!-- User submits comment containing: -->
-<div>Nice post!</div><script>alert('xss')</script>
-
-<!-- Application stores the comment and later renders it verbatim: -->
-<div class="comment">
+There are three main types of XSS attacks, based on how the malicious script is delivered and executed.
+\subsubsection[short]{Reflected (non-persistent)}
+  User-supplied input is immediately returned by the web application
+  — for example, in search results, error messages, or redirects — without being properly encoded or escaped for safe rendering 
+  in the browser. The payload is not stored on the server; instead, an attacker crafts a URL (or form) containing the payload 
+  and convinces a victim (for example, via social engineering) to visit it. When the victim follows the link, the server responds 
+  with a page that includes the malicious code, which then executes in the victim's browser.
+  \paragraph{Example:}
+  \begin{verbatim}
+  https://example.com/search?q=<script>script_here</script>
+  \end{verbatim}
+  The server responds with a webpage that includes the parameter \verb|q| directly; in this case, the script is executed in the victim's browser.
+  \subsubsection[short]{Stored (persistent)}
+  User-supplied input is stored on the target server (for example, in a database, 
+  profile field, comment, or message) and later served to other users without proper encoding or sanitization. 
+  Because the malicious payload is persisted, any user who views the affected page may receive content that contains 
+  executable script, which will run in that user's browser. 
+  \paragraph{Example:}
+  \begin{verbatim}
+  <!-- User submits comment containing: -->
   <div>Nice post!</div><script>alert('xss')</script>
-</div>
-\end{verbatim}
-When other users load the page that lists comments, the server includes the stored comment directly in the HTML, and the script executes in each viewer's browser.
-\paragraph{DOM-based}
-A form of XSS in which the entire unsafe data flow occurs in the browser: client-side JavaScript reads attacker-controlled data (for example from the URL fragment, query string, \texttt{window.name}, or \texttt{postMessage}) and then unsafely writes it into the DOM, causing execution — without the payload ever being reflected or stored by the web server.
 
-\paragraph{Vulnerable example (client-side)}
-\begin{verbatim}
-<!-- index.html (static) -->
-<div id="msg"></div>
-<script>
-  // attacker-controlled: location.hash
-  const frag = location.hash.substring(1);
-  // UNSAFE: inserts raw HTML from the fragment
-  document.getElementById('msg').innerHTML = frag;
-</script>
-\end{verbatim}
+  <!-- Application stores the comment and renders it-->
+  <div class="comment">
+    <div>Nice post!</div><script>alert('xss')</script>
+  </div>
+  \end{verbatim}
+  When other users load the page that lists comments, the server includes the stored comment directly in the HTML, and the script executes in each viewer's browser.
+  \subsubsection[short]{DOM-Based}
+  A form of XSS in which the entire unsafe data flow occurs in the browser: client-side JavaScript reads attacker-controlled data (for example from the URL fragment, query string, \texttt{window.name}, or \texttt{postMessage}) and then unsafely writes it into the DOM, causing execution — without the payload ever being reflected or stored by the web server.
+  \paragraph{Vulnerable example (client-side)}
+  \begin{verbatim}
+  <!-- index.html (static) -->
+  <div id="msg"></div>
+  <script>
+    // attacker-controlled: location.hash
+    const frag = location.hash.substring(1);
+    // UNSAFE: inserts raw HTML from the fragment
+    document.getElementById('msg').innerHTML = frag;
+  </script>
+  \end{verbatim}
 \subsection{XSS mitigation}
 No single technique can solve XSS, but rather a combination of strategies is required:
 \begin{itemize}
