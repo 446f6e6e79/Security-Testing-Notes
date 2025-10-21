@@ -6,6 +6,12 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tcolorbox} 
+\usepackage{fancyhdr} % Aggiunto per intestazioni personalizzate
 
 % Configurazione di codeblocks con il pacchetto listings
 \lstset{
@@ -14,5 +20,44 @@
   commentstyle=\color{green!50!black},
   stringstyle=\color{red},
   showstringspaces=false,
-  breaklines=true
+  breaklines=true,
+  frame=single, % Aggiunge un bordo attorno al codice
+  numbers=left, % Numeri di riga a sinistra
+  numberstyle=\tiny\color{gray}, % Stile dei numeri di riga
+  stepnumber=1, % Numero di righe da saltare tra i numeri
+  numbersep=-5pt, % Distanza tra i numeri di riga e il codice
+  tabsize=2, % Dimensione del tab
+  captionpos=b, % Posizione della didascalia
 }
+
+% Configurazione dell'intestazione
+\pagestyle{fancy}
+\fancyhf{} % Pulisce le intestazioni e i piè di pagina
+\fancyhead[L]{\leftmark} % Sezione corrente a sinistra
+\fancyhead[R]{\thepage} % Numero di pagina a destra
+
+% Comandi personalizzati per definizioni
+\newcommand{\definition}[2]{%
+  \paragraph{#1:} #2%
+}
+
+% Alternativa con enfasi sul termine
+\newcommand{\defterm}[2]{%
+  \paragraph{\textbf{#1}:} #2%
+}
+
+% Ambiente per liste di definizioni
+\newenvironment{definitions}{%
+  \begin{description}[font=\normalfont\bfseries\large, leftmargin=0pt, labelindent=0pt]
+}{%
+  \end{description}
+}
+
+% Definizione con box colorato (opzionale)
+\newtcolorbox{defbox}[1]{
+  colback=blue!5!white,
+  colframe=blue!75!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+

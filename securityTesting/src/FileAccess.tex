@@ -1,0 +1,33 @@
+\section{File access}
+\subsection{File Inclusion}
+File inclusion vulnerabilities can affect applications that rely on \textbf{run-time tasks} that work with \textbf{files} (i.e. when an application allows users to access files, submit input into files, upload files to the server).
+
+\paragraph{Local File Inclusion (LFI):}
+LFI attack occurs when an application uses the path to a local file as input. It aims at forcing the application to expose or run files on the server.
+
+\paragraph{Remote File Inclusion (RFI):}
+RFI attack occurs when an application dynamically references external resources, such as files or scripts. It aims at \textbf{exploiting the referencing function} to \textbf{upload a malware} from a remote URL.
+
+\subsection{Directory Traversal:}
+\label{Dir-Traversal}
+A path traversal (directory traversal) attack aims to access files and directories that are stored outside the web server's document root. If the web server is misconfigured, an attacker may be able to modify the path in the URL (for example, using sequences like ``\texttt{../}'' or encoded variants) to access files the application did not intend to expose.
+
+\subsection{File Binding}
+Often, file names are used to bind a file to a program object. However, every time a file name is referenced in an operation, this binding is reasserted — meaning that the program may end up operating on a different file if the file name has been changed or replaced in the meantime.  
+Therefore, checks are required to ensure that the intended file is actually being accessed.  
+\\\\It is recommended to access files using \textbf{file descriptors} rather than just file names, as they provide a higher degree of certainty about which file object is actually being acted upon.
+
+\subsection{TOCTOU (Time Of Check, Time Of Use)}
+\textbf{Time Of Check, Time Of Use (TOCTOU)} is a race condition that occurs when an application performs:
+\begin{itemize}
+    \item a \textbf{check operation}, to verify the existence or state of a file at time $t$;
+    \item a \textbf{use operation}, to read or write data at a later time $t + \Delta t$.
+\end{itemize}
+If another process modifies or deletes the file between the check and the use, the application may operate on an unintended or invalid file, leading to race conditions or security vulnerabilities.
+\\\\A more effective solution involves using \textbf{atomic operations} and accessing files via \textbf{file descriptors}, which ensures that the file being operated on is the same one that was originally opened.
+\subsection{Mitigation}
+\begin{itemize}
+    \item Avoid the use of user inputs within the \textbf{file system calls};
+    \item If forced to use user input for file operations, resolve and validate the paths;
+    \item Use file descriptors, rather than filenames.
+\end{itemize}

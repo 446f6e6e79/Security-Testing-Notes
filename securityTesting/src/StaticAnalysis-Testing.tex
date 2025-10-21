@@ -1,0 +1,152 @@
+\section{Static Analysis and Testing}
+Software analysis and testing are applied to detect security issues. These are usually driven by the programmer's experience to recognize patterns and situations in the code. Its automation is a key aspect if we want to build \textbf{secure software projects}.
+
+\paragraph{Verification:} check the consistency of the implementation with a specification. This phase usually checks for the presence of bugs in the application.
+The target of the verification can be different (unit testing, set of units, system testing) and for each target, different types of analysis must be done;
+\paragraph{Validation:} check the degree at which a software system fulfills the customer requirements.
+
+\subsection{Dynamic analysis (or Testing)}
+Software testing concerns \textbf{exercising the software} and observing the behavior and the produced output.
+\begin{itemize}
+    \item Test data are needed to execute the software;
+    \item Can reveal the presence of errors, not their absence
+\end{itemize}
+To conduct Dynamic analysis, firstly test cases must be identified to test the software under stress.
+\begin{itemize}
+    \item They are based on specifically defined input data;
+    \item An \textbf{oracle} that describes what the system is supposed to do is needed. It will be used to check program results.
+\end{itemize}
+
+\subsection{Static analysis}
+Static analysis examines the software’s source code or documentation \textbf{without executing the program}.  
+\begin{itemize}
+    \item Both code and design documents can be analyzed;
+    \item It can demonstrate the absence of specific classes of errors.
+\end{itemize}
+In this context, the \textbf{test oracle} is the tool’s input — a set of desired
+properties or correctness rules that the program must satisfy.
+
+Several \textbf{approaches to static analysis} exist, each with different goals and levels of automation:
+\begin{itemize}
+    \item \textbf{Model checking}: it is difficult to define both the model and its properties, but once specified, the verification process can be fully automated;
+    \item \textbf{Pattern-based analysis}: enforces coding practices or policies by matching code against known patterns, templates, or weaknesses. It is easy to apply but often limited in precision;
+    \item \textbf{Flow-based static analysis}: simulates the logical execution of the program to track data propagation and its effect on control flow. It does not depend on user input and can identify data-dependent bugs.
+\end{itemize}
+
+Typically, these tools approximate the program’s reachable states with a more computationally feasible representation.  
+\textbf{Under-approximation} is commonly used — every property that holds in the approximation also holds in the real software — thereby preventing false positives.
+
+\paragraph{Pros:}
+\begin{itemize}
+    \item Scales well with the size of the codebase;
+    \item Establishes properties for all possible executions of a program;
+    \item Produces explanations for why a property may not hold;
+    \item Can detect faults that are difficult to find through traditional testing.
+\end{itemize}
+
+\paragraph{Cons:}
+\begin{itemize}
+    \item Scalability and effectiveness depend heavily on the chosen representation and approximation;
+    \item Non-trivial semantic properties are undecidable.
+\end{itemize}
+
+
+\subsection{Flow analysis}
+Several models can be used to describe an application and represent its code.  
+Different models may emphasize different aspects of program behavior — such as \textbf{control flow} or \textbf{data dependence}. 
+\\\textbf{Flow analysis} focuses on understanding how information moves through the program.  
+By analyzing both control and data dependencies, it helps identify relationships among variables, track how data values are produced and consumed, and evaluate the effects of data changes across the codebase.  
+\\\\Program analysis and test design techniques often leverage data flow information to enhance their effectiveness.  
+
+\subsection{Control-flow graph}
+A \textbf{Control-Flow Graph (CFG)} is defined as follows:
+\[
+CFG = (N, E, n_e, n_x)
+\]
+\begin{itemize}
+    \item $N$: \textbf{set of nodes}, one for each \textbf{statement} (instruction) of the program;
+    \item $E \subseteq N \times N$: \textbf{set of edges}, where $(n, m) \in E$ if statement $m$ can be executed immediately after $n$;
+    \item $n_e$: \textbf{entry node} of the program;
+    \item $n_x$: \textbf{exit node} of the program.
+\end{itemize}
+
+\paragraph{Path:} represents a possible program execution. It is composed of a sequence of nodes and edges starting from the entry node and ending at a terminal node.
+
+\paragraph{Linearly independent path:} a path is \textbf{linearly independent} if it introduces at least one new edge that has not been traversed by any previously defined path.  
+These paths are used to identify distinct behaviors implemented in a program. Typically, a test case should be defined to verify each independent path.
+\subsubsection{Def-Use pairs}
+A \textbf{def-use pair} associates a point in a program code where a value is defined with a point where it's used.
+\paragraph{Definition:} where a variable gets a value:
+\begin{itemize}
+    \item Declaration;
+    \item Initialization;
+    \item Assignment;
+    \item Values received by a parameter.
+\end{itemize}
+\paragraph{Use:} extraction of a value from a variable:
+\begin{itemize}
+    \item Expressions;
+    \item Conditional statements;
+    \item Parameter passing;
+    \item returns.
+\end{itemize}
+\paragraph{Def-clear path:} a path along the CFG from a definition to a use of the same variable, without another definition of the variable in between.
+
+\subsubsection{Data Dependence Graph}
+A direct data dependence graph is defined using the two definitions  we just gave:
+\begin{itemize}
+    \item Its nodes are the same as in the CFG;
+    \item Its edges are the def-use pairs.
+\end{itemize}
+This graph can be used to identify \textbf{data dependence}, where values are from.
+\subsubsection{Control Dependence Graph}
+Also a \textbf{control dependence graph} can be defined as follows:
+\begin{itemize}
+    \item Its nodes are the same as the same as in the CFG;
+    \item Its edges are unlabeled, direct control dependencies.
+\end{itemize}
+This type of graph shows \textbf{control dependence}: which \textbf{statement controls} whether a statement is executed or not. 
+\subsection{Data-Flow analysis}
+\subsubsection{Reaching definition}
+There is an association $(d,u)$ between a \textbf{definition of a variable} \verb|v| at code statement $d$ and a \textbf{use of variable} \verb|v| at code statement $u$ iff:
+\begin{itemize}
+    \item there is at least one control flow path from $d$ to $u$;
+    \item there is no intervening definition of \verb|v|.
+\end{itemize}
+In this case, we say that $v_d$ \textbf{reaches} $v_u$.
+
+\paragraph{Normal graph exploration}
+Even if we consider a loop-free path, the number of paths can be exponentially larger than the number of nodes and edges. Practical algorithms therefore do not search every individual path. Instead, they summarize the reaching definitions at a node over all the paths reaching that node.
+
+\paragraph{DF Algorithm:} an efficient algorithm for \textbf{computing reaching definitions}, and other properties, is based on the way \textbf{reaching definitions} at one node are related to the one of its adjacent nodes.
+\\\\Suppose we are calculating the \textbf{reaching definitions} of node $n$, and there is an edge $(p,n)$ from an immediate predecessor, node $p$:
+\begin{itemize}
+    \item if the predecessor node $p$, assigns a value to a variable \verb|v|, then the definition $v_p$ \textbf{reaches} $n$;
+    \item If a definition $v_p$ of a variable \verb|v| reaches a predecessor node $p$, then the definition is propagated on from p to n. 
+\end{itemize}
+\paragraph{Formal definition:} we can formally define the idea expressed by the algorithm we just cited. At each node $n$, we have:
+\begin{itemize}
+    \item \textbf{Reaching definitions} $(In(n))$: definitions flowing out of th predecessor nodes $m$. Can be defined as
+    \[\bigcup_{m\in pred(n)} Out(m)\]
+    \item \textbf{Out flow} $Out(n)$: the output of a node n can formally be defined as:
+    \[Out(n) = In(n) \setminus Kill(n) \cup Gen(n) \]
+    Where:
+    \begin{itemize}
+        \item $Gen(n) = \{v_n| v\text{ is defined or modified at }n\}$
+        \item $Kill(n) = \{v_x| v \text{ is defined or modified at x AND } v \text{ is modified at} n\}$
+    \end{itemize}
+\end{itemize}
+\subsubsection{Meet over path}
+Another solution for data-flow analysis is the \textbf{Meet Over Path} (MOP).
+\\At a node $n$, the MOP is defined as:
+\[MOP[n] = \bigwedge_{p\in P_{n}} f_p(T)\]
+where:
+\begin{itemize}
+    \item $P_n$ the set of all path from the entry node to node n;
+    \item $f_p$ is the composition of transfer function along path $p$;
+    \item $T$ is the initial information
+    \item $\wedge$ represents the meet operator.
+\end{itemize}
+\paragraph{Exact solution:} the exact solution requires, instead of considering all path from the entry node, to the node n, to just consider the \textbf{feasible paths}.
+\[EX[n] = \bigwedge_{p\in feas(P_{n})} f_p(T)\]
+This is an \textbf{undecidable} problem.

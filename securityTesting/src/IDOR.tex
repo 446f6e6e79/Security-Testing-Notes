@@ -1,0 +1,11 @@
+\section{Insecure Direct Object Reference (IDOR)}
+Insecure Direct Object Reference (IDOR) is a type of \textbf{access control vulnerability} that occurs when an application uses user-supplied input to access internal objects directly, without proper authorization checks.  
+This happens when a developer exposes a reference to internal implementation objects — such as files, database records, or keys — without adequate validation, allowing attackers to manipulate those references and gain unauthorized access to data or functionality.
+
+\paragraph{How:}
+\begin{itemize}
+    \item \textbf{URL tampering:} modifying the value of a parameter directly in the browser's address bar (e.g., changing \texttt{user\_id=123} to \texttt{user\_id=124});
+    \item \textbf{Body manipulation:} similar to URL tampering, but the attacker modifies parameters in the request body (e.g., in POST or PUT requests);
+    \item \textbf{Path traversal:} already discussed in Section~\ref{Dir-Traversal};
+    \item \textbf{Cookie or JSON ID manipulation:} if the application is vulnerable to IDOR, an attacker can alter identifiers stored in cookies or JSON payloads to access other users' data.
+\end{itemize}

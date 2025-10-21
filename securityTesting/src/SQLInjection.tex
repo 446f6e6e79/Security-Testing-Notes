@@ -1,0 +1,56 @@
+\section{SQL Injection}
+\label{sec:sql-injection}
+\textbf{SQL injection} is a vulnerability that allows an attacker to \textbf{inject unintended SQL code} into \textbf{queries} executed by an application. Any software that constructs SQL queries using external input may be vulnerable to this type of attack.
+
+\begin{itemize}
+    \item \textbf{Severity}: very severe;
+    \item \textbf{Priority}: often high;
+    \item \textbf{Scope}: software that uses SQL;
+    \item \textbf{Technical impact}: unauthorized access to database contents and metadata, data modification or deletion, and potential privilege escalation;
+    \item \textbf{Worst-case scenario}: full system compromise (data exfiltration, administrative takeover, code execution via database features).
+\end{itemize}
+
+\subsection{Underlying idea}
+The application executes an SQL query where some parameters are taken from user input. For example:
+\begin{lstlisting}[language=SQL]
+SELECT * FROM users WHERE userId = <user_id> AND password = <user_password>;
+\end{lstlisting}
+If the application naively substitutes user-supplied values into the query, an attacker can craft input that changes the query semantics.
+
+\subsection{Example attack}
+Suppose the application builds the query by concatenation. If an attacker supplies:
+\begin{verbatim}
+user_id:    ' OR '1'='1
+user_password:    ' OR '1'='1
+\end{verbatim}
+the resulting query becomes:
+\begin{lstlisting}[language=SQL]
+SELECT * FROM users
+    WHERE userId = '' OR '1'='1'
+    AND password = '' OR '1'='1';
+\end{lstlisting}
+Because the boolean expression \texttt{'1'='1'} is always true, the WHERE clause may be satisfied for many rows, allowing the attacker to bypass authentication or access data they shouldn't.
+
+\subsection{SQL Injection type}
+\paragraph{In-Band SQL injection}
+In this technique, also called \textbf{CLASSICAL}, the attacker uses the same way to hack the database and get the data. The attacker has the possibility to \textbf{modify the original query} and receive the result from the database. This is composed of 3 variants:
+\paragraph{Classic SQL Injection:} basic and traditional version, seen in the previous example;
+
+\paragraph{Error-based SQL Injection:} relies on feeding \textbf{unexpected commands} or \textbf{invalid input}, with the goal of causing an error in the database server. If not set up correctly, the server can respond with \textbf{error messages}, that may contain details about the target system (i.e. database version, O.S., etc...). Knowing this information, the attacker can use specific vulnerabilities;
+
+\paragraph{Union-Base SQL Injection:} the user combines the queries and gets the results back as an HTTP response.
+\paragraph{Inferential SQL Injection}
+This type of injection, also called \textbf{BLIND}, does not show any error message. It's more difficult to exploit, as it returns information only when the application is given SQL payloads that return true or false responses from the server. By observing the responses, an attacker can extract sensitive information.
+
+\paragraph{Boolean Based:} the attacker observes the behavior of the database server and the application, after combining legitimate queries with malicious data, using boolean operators;
+
+\paragraph{Time Based:} the attacker observes the behavior of the database server and the application, after combining legitimate queries with SQL commands that cause time delays.
+
+\paragraph{Out-of-band SQL Injection:} this type of SQL injection is used when the application’s normal responses do not reveal useful information (for example, the application always returns the same page regardless of input, or error messages are suppressed). Instead of receiving data directly through the application channel, the attacker forces the database server to communicate with an external service that the attacker controls (for example via DNS or HTTP), and then collects the leaked data from that external channel.
+
+\subsection{SQL Injection mitigation}
+\begin{itemize}
+    \item \textbf{Escaping} all user supplied input. This means to treat all the data as plain text, rather than executable code or other harmful inputs;
+    \item Define a list of allowed inputs, to ensure only them are executed;
+    \item Use of prepared statements with parametrized queries. Programming languages allow to use  predefined structures to compose SQL queries by accepting only values of specified types.
+\end{itemize}
