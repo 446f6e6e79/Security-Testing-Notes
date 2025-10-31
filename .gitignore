@@ -13,3 +13,5 @@ build/
 *.fdb_latexmk
 *.fls
 *.pdf
+.DS_Store
+securityTesting/.DS_Store

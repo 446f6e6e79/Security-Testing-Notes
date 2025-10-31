@@ -1,0 +1,61 @@
+\section{Static Analysis and Testing}
+Software analysis and testing are applied to detect security issues. 
+These are usually driven by the programmer's experience to recognize patterns and situations in the code. 
+Its automation is a key aspect if we want to build \textbf{secure software projects}.
+
+\paragraph{Verification:} check the consistency of the implementation with a specification. 
+This phase usually checks for the presence of bugs in the application. The target of the verification 
+can be different (unit testing, set of units, system testing) and for each target, different types of analysis must be done;
+\paragraph{Validation:} check the degree at which a software system fulfills the customer requirements.
+
+\subsection{Dynamic analysis (or Testing)}
+Software testing concerns \textbf{exercising the software} and observing the behavior and the produced output.
+\begin{itemize}
+    \item Test data are needed to execute the software;
+    \item Can reveal the presence of errors, not their absence
+\end{itemize}
+To conduct Dynamic analysis, firstly test cases must be identified to test the software under stress.
+\begin{itemize}
+    \item They are based on specifically defined input data;
+    \item An \textbf{oracle} that describes what the system is supposed to do is needed. It will be used to check program results.
+\end{itemize}
+
+\subsection{Static analysis}
+Static analysis examines the software’s source code or documentation \textbf{without executing the program}.  
+\begin{itemize}
+    \item Both code and design documents can be analyzed;
+    \item It can demonstrate the absence of specific classes of errors.
+\end{itemize}
+In this context, the \textbf{test oracle} is the tool’s input — a set of desired
+properties or correctness rules that the program must satisfy.
+
+\subsubsection{Approaches to static analysis}
+Several \textbf{approaches to static analysis} exist, each with different goals and levels of automation:
+\begin{itemize}
+    \item \textbf{Model checking}: a formal verification technique that systematically explores the state space of a program to verify if it satisfies certain properties;
+    \item \textbf{Pattern-based analysis}: enforces coding practices or policies by matching code against known patterns, templates, or weaknesses. It is easy to apply but often limited in precision;
+    \item \textbf{Flow-based static analysis}: simulates the logical execution of the program to track data propagation and its effect on control flow. It does not depend on user input and can identify data-dependent bugs.
+\end{itemize}
+
+\subsubsection{Approximations in static analysis}
+Static analysis often relies on \textbf{approximations} of the program's reachable states and behaviors to make the analysis tractable.
+\begin{itemize}
+    \item \textbf{Sound approximation}: every property that holds in the approximation also holds in the actual program. It may produce false positives but guarantees no false negatives;
+    \item \textbf{Complete approximation}: every property that holds in the approximation also holds in the actual program. Also referred as under-approximation, it may produce false negatives but guarantees no false positives;
+    \item \textbf{Conservative approximation}: the approximation is sound and complete.
+\end{itemize}
+
+\subsubsection{Pros and cons of static analysis}
+\begin{itemize}
+    \item \textbf{Pros}:
+    \begin{itemize}
+        \item Scales really good for large codebases;
+        \item Can establish the absence of certain types of vulnerabilities;
+        \item Can produce an explanation of why properties hold or not.
+    \end{itemize}
+    \item \textbf{Cons}:
+    \begin{itemize}
+        \item It's not always easy to scale the problem of approximating program behaviors;
+        \item Non trivial semantic properties are undecidable (Rice's theorem);
+    \end{itemize}
+\end{itemize}

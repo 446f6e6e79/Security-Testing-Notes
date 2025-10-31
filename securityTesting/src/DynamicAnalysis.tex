@@ -1,0 +1,82 @@
+\section{Testing}
+Dynamic analysis, also referred to as \textbf{testing}, involves examining a program's behavior during its execution. We can 
+differientiate between two main types of testing:
+\begin{itemize}
+    \item \textbf{Testing}: verifies the functionality of the software against sensible inputs and border cases. It checks that functionalities work as expected;
+    \item \textbf{Security testing}: looks for wrong, unwanted and strange behaviors of the software that could lead to vulnerabilities and security issues.
+\end{itemize}
+
+\paragraph{Test suite:} a collection of test cases that are intended to be executed together to validate the behavior of a software application.
+Each test case is composed of a \textbf{test input} and an \textbf{expected output}, which is used to verify the correctness of the software's behavior.
+
+\paragraph{Problem of testing:}
+\begin{itemize}
+    \item How to \textbf{identify} the \textbf{test cases}?
+    \item How to identify the \textbf{test oracle}?
+    \item When to \textbf{stop testing}?
+\end{itemize}
+
+\subsection{Test coverage criteria}
+A \textbf{test coverage criterion} defines a set of requirements that a test suite must satisfy to be considered adequate.
+It aims at insuring that a test suite is comprehensive enough and that all relevant and critical application 
+aspects and functionality are covered.
+\\Test coverage criteria can:
+\begin{itemize}
+    \item \textbf{Increase test effectiveness}: helps insuring that the test suite covers a wide range of scenarios and edge cases;
+    \item \textbf{Remove redundant tests}: can identify and eliminate redundant tests that do not contribute to the overall coverage;
+    \item \textbf{Discover uncovered areas}: can highlight areas of the code that are not covered by existing test suites;
+    \item \textbf{Improve regression testing}: can help ensure that changes to the code do not introduce new bugs or vulnerabilities.
+\end{itemize}
+
+Several test coverage criteria exist, each focusing on different aspects of the software. 
+We will mainly focus on \textbf{code coverage criteria}. It measures how much of the application source code is executed during testing.
+Several code criteria exist:
+\begin{itemize}
+    \item \textbf{Statement coverage}: ensures that each statement in the code is executed
+    \item \textbf{Branch coverage}: ensures that each branch of control structures (like if-else statements) is executed
+    \item \textbf{Decision coverage}: ensures that each decision point (like conditions in if statements) is evaluated to both true and false
+    \item \textbf{Condition coverage}: ensures that each individual condition in a decision point is evaluated to both true and false
+\end{itemize}
+We first havw to introduce a few definitions:
+\begin{itemize}
+    \item \textbf{Coverage}: the percentage of code elements (statements, branches, etc.) that have been executed during a single test case;
+    \item \textbf{Test suite coverage}: measures how effectively a set of test cases covers the codebase. It can be computed in different ways:
+    \begin{itemize}
+        \item \textbf{Total suite coverage}(TSC): obtained by aggregating the coverage achieved by all test cases in the suite;
+        \item \textbf{Additional suite coverage}(ASC): consider the incremental coverage provided by each test case. Starting from the case with 
+        covers the largest number of new elements, add subsets based on the number of new elements they cover.
+    \end{itemize}
+\end{itemize}
+\subsubsection{Statement coverage criteria}
+Statement coverage aims at involving the execution of \textbf{all possible statements} in the code at least once during testing.
+It can be defined as:
+\[\text{coverage}=\frac{\text{executed statements}}{\text{total statements}} \cdot 100\]
+The goal is to identify test cases that covers different portion of the code.
+\\\\Considering the whole suite, we can define:
+\[\text{TSC}=\frac{\text{covered statement}}{\text{total statements}} \cdot 100\]
+
+\subsubsection{Decision coverage criteria}
+Decision coverage aims at ensuring that \textbf{the possible outcomes of all boolean expressions} are executed at least once during testing.
+It can be defined as:
+\[\text{coverage}=\frac{\text{executed decision outcomes}}{\text{total decision outcomes}} \cdot 100\]
+To fully cover all decision outcomes, test cases must be designed to evaluate each boolean expression to both true and false.
+\\\\Considering the whole suite, we can define:
+\[\text{TSC}=\frac{\text{covered decision}}{\text{total decision}} \cdot 100\]
+
+\subsubsection{Condition coverage criteria}
+Similar to decision coverage, condition coverage focuses on ensuring that \textbf{each individual condition} within a decision point is evaluated to both true and false at least once during testing.
+It can be defined as:
+\[\text{coverage}=\frac{\text{executed condition outcomes}}{\text{total condition outcomes}} \cdot 100\]
+\\\\Considering the whole suite, we can define:
+\[\text{TSC}=\frac{\text{covered condition}}{\text{total condition}} \cdot 100\]
+
+\subsubsection{Branch coverage criteria}
+Branch coverage aims at ensuring that \textbf{all possible branches} of control structures are executed. 
+To ensure this, it checks that every possible edge in the control flow graph is traversed during testing.
+It can be defined as:
+\[\text{coverage}=\frac{\text{executed branches}}{\text{total branches}} \cdot 100\]
+\\\\Considering the whole suite, we can define:
+\[\text{TSC}=\frac{\text{covered branches}}{\text{total branches}} \cdot 100\]
+
+\subsection{Mutation testing}
+
