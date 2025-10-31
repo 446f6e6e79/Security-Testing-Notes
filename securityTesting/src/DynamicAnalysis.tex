@@ -79,4 +79,14 @@ It can be defined as:
 \[\text{TSC}=\frac{\text{covered branches}}{\text{total branches}} \cdot 100\]
 
 \subsection{Mutation testing}
-
+The goal of \textbf{mutation testing} is to evaluate the effectiveness of a test suite in discovering real faults in the software.
+It involves creating \textbf{mutants} of the original program by introducing small changes (mutations) to its code.
+\\\\The process of mutation testing can be summarized in the following steps:
+\begin{enumerate}
+    \item \textbf{Mutant generation:} create a set of mutants by applying mutation operators to the original program. Each mutant should differ from the original program by a small single change;
+    \item \textbf{Test execution:} run the existing test suite against each mutant. Record whether the test suite detects the mutation;
+    \item \textbf{Mutant analysis:} analyze the results of the test executions to determine which mutants were "killed" (detected by the test suite) and which survived (not detected);
+\end{enumerate}
+The effectiveness of the test suite can be measured using the \textbf{mutation score}:
+\[\text{Mutation Score}=\frac{\text{Killed Mutants}}{\text{Total Mutants}} \cdot 100\]
+We say that a test suite is \textbf{mutation adequate} if it achieves 100\% mutation score.
