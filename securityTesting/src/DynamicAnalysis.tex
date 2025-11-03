@@ -90,3 +90,41 @@ It involves creating \textbf{mutants} of the original program by introducing sma
 The effectiveness of the test suite can be measured using the \textbf{mutation score}:
 \[\text{Mutation Score}=\frac{\text{Killed Mutants}}{\text{Total Mutants}} \cdot 100\]
 We say that a test suite is \textbf{mutation adequate} if it achieves 100\% mutation score.
+
+\subsection{Fuzzing}
+Fuzzing is a \textbf{highly effective} and \textbf{automated} security testing technique.
+It involves generating \textbf{random or semi-random inputs} to a program and check for crashes, memory leaks, or unexpected behavior.
+Some examples of test inputs are:
+\begin{itemize}
+    \item Very \textbf{long} or \textbf{empty} strings;
+    \item \textbf{min / max} values for numeric inputs, zero or negative numbers;
+    \item \textbf{Malformed} data structures or files;
+    \item \textbf{Unexpected} sequences of inputs or commands, usually specific to the application domain.
+\end{itemize}
+\subsubsection{Types of Fuzzing}
+\begin{itemize}
+    \item \textbf{Dump fuzzing}: fuzzing that does not consider the context and state of the software.
+    It focuses on generating random inputs without any knowledge, fed directly to the program and observing its behavior.
+    \item \textbf{Smart fuzzing}: generates inputs based on a predefined model, using a degree of understanding of the target application.
+    This approach aims to create \textbf{valid} inputs that conform to the expected structure of the application, taking into account also the code coverage.
+    Examples of algorithm used for generating inputs are:
+    \begin{itemize}
+        \item \textbf{Random};
+        \item \textbf{Template / Grammar}: follows specific templates or grammars to generate inputs that conform to expected formats;
+        \item \textbf{Guided}: the input generation is guided by feedback from previous test executions, such as code coverage information or execution paths taken by the program;
+        \item \textbf{Mutation based}: starts with a set of valid inputs and applies mutations to create new test cases;
+        \item \textbf{Generation based}: creates inputs from scratch based on a model of the input space.
+\end{itemize}
+\subsubsection{Pros and cons of Fuzzing}
+\begin{itemize}
+    \item \textbf{Pros}:
+    \begin{itemize}
+        \item Can discover unknown vulnerabilities and give insights into the robustness of the software;
+        \item Automated and scalable. With minimal human effort it can generate a large number of test cases;
+    \end{itemize}
+    \item \textbf{Cons}:
+    \begin{itemize}
+        \item Fuzzers don't guarantee full coverage of the codebase;
+        \item Crashes may be hard to reproduce and debug;
+        \item For programs with complex input formats, generating valid inputs and achieving good coverage can be challenging.
+    \end{itemize}
