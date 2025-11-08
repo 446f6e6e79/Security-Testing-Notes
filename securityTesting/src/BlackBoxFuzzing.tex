@@ -1,0 +1,42 @@
+\subsection{Black-box fuzzing}
+Black-box fuzzing is a software testing technique, based on the concept of \textbf{fuzzing}, that focuses on testing the 
+external behavior of a program without any knowledge of its internal structure or implementation.
+To derive test cases, black-box fuzzing relies only on the program's input and output specifications.
+\\There are several types of black-box fuzzing techniques, including:
+\begin{itemize}
+    \item \textbf{Random testing}: input values are randomly sampled from the appropriate input space;
+    \item \textbf{Grammar based fuzzing}: input values are generated based on a predefined grammar that describes the valid input format;
+    \item \textbf{Mutation based fuzzing}: existing valid inputs are modified or mutated to create new test cases;
+    \item \textbf{Equivalence partitioning}: inputs are divided into equivalence classes, and test cases are generated from each class to ensure coverage of all possible scenarios.
+\end{itemize}
+\subsubsection{Random testing}
+Random testing is the simplest form of black-box fuzzing, where input values are randomly generated from the input space of the program.
+This technique is easy to implement and can quickly generate a large number of test cases, 
+but it may not be effective in finding specific types of bugs or vulnerabilities.
+\subsubsection{Grammar based fuzzing}
+In grammar based fuzzing, test cases are generated from a predefined grammar that describes the valid input format for the program.
+This technique is particularly useful for testing programs that accept structured inputs, only creating valid inputs.
+\\The steps involved in grammar based fuzzing usually include: 
+\begin{enumerate}
+    \item \textbf{Definition of the grammar}: a formal grammar is defined that describes the valid input format for the program;
+    \item \textbf{Generation of test cases}: such grammar is provided to the fuzzer, which generates valid input values;
+    \item \textbf{Execution of test cases}: the generated test cases are executed on the program, and the output is monitored for any unexpected behavior or crashes.
+\end{enumerate}
+
+\subsubsection{Mutation based fuzzing}
+In mutation based fuzzing little or no knowledge of the input format is required. Instead, existing valid inputs are 
+modified or mutated to create new test cases.
+\\An example of mutation-based fuzzing, in the context of a PDF viewer application, could involve:
+\begin{enumerate}
+    \item \textbf{Collection of seed inputs}: a set of valid PDF files is collected to serve as seed inputs for the fuzzer;
+    \item \textbf{Test of collected inputs}: the seed inputs are executed on the PDF viewer application to ensure they are valid and do not cause any crashes or unexpected behavior;
+    \item \textbf{Mutation of inputs}: using a mutation algorithm, grab the seed inputs and apply various mutations to them. Feed the mutated inputs back into the application;
+\end{enumerate}
+\subsubsection{Equivalence partitioning}
+In equivalence partitioning, the input space of the program is divided into equivalence classes, called \textbf{partitions}.
+We can assume that:
+\begin{itemize}
+    \item all inputs within a partition will be treated similarly by the program;
+    \item testing one input from each partition is sufficient to cover all possible scenarios.
+\end{itemize}
+At least \textbf{valid} and \textbf{invalid} partitions should be created for each input parameter.

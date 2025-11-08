@@ -1,0 +1,28 @@
+\subsection{White-box fuzzing}
+\textbf{White-box fuzzing} is a software testing technique that is based on the fact that the tester has
+\textbf{full knowledge} of the \textbf{internal structure} and \textbf{implementation} of the program being tested.
+\\This technique combines traditional fuzzing methods with program analysis techniques, making it possible to generate significant test cases.
+
+\subsubsection{Symbolic execution}
+Symbolic execution is a \textbf{static code analysis} technique used in white-box fuzzing to \textbf{explore all possible execution paths} of a program.
+Instead of using concrete input values, symbolic execution uses \textbf{symbolic values} to represent inputs, allowing it to reason about the program's behavior more generally.
+\\It is composed of the following steps:
+\begin{enumerate}
+    \item \textbf{Symbolic representation}: assign symbolic values to the program's input variables;
+    \item \textbf{Path exploration}: execute the program symbolically, exploring all possible execution paths;
+    \item \textbf{Path constraints}: collect path constraints for each execution path, representing the conditions that must be satisfied for that path to be taken;
+    \item \textbf{Checking satisfiability}: use a constraint solver to determine if the path constraints are satisfiable.
+\end{enumerate}
+The output of symbolic execution is a \textbf{set of path constraints} that can be used to generate test cases that cover all possible execution paths of the program.
+\subsubsection{Dynamic symbolic execution}
+\textbf{Dynamic symbolic execution} (DSE), is a hybrid technique that combines symbolic execution with concrete execution.
+It executes the program with concrete inputs while simultaneously tracking symbolic constraints along the execution path.
+Solving these constraints generates new inputs that explore different paths in subsequent executions.
+\\The steps involved in dynamic symbolic execution are:
+\begin{enumerate}
+    \item \textbf{Concrete execution}: execute the program with a set of well-defined initial inputs;
+    \item \textbf{Symbolic tracking}: collect constraints on symbolic inputs during execution;
+    \item \textbf{Solve constraints}: use a constraint solver to generate new inputs that explore different execution paths;
+    \item \textbf{Fuzzing}: generate new test cases by negating constraints one by one;
+    \item \textbf{Repeat}: repeat the process with the newly generated inputs to explore more paths.
+\end{enumerate}
