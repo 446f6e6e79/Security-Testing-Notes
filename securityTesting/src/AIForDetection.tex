@@ -1,0 +1,31 @@
+\section{AI for Vulnerability Detection}
+Vulnerability detection with AI tools involves using machine learning algorithms to identify potential security flaws in software systems.
+These tools can analyze code, configurations and system behaviors to detect anomalies that may be exploited by attackers.
+Various task level are considered in vulnerability detection, including:
+\begin{itemize}
+    \item \textbf{CWE classification:} AI models can be trained to classify vulnerabilities according to the Common Weakness Enumeration (CWE) taxonomy, helping security teams prioritize remediation efforts;
+    \item \textbf{Source code classification:} binary classifier between vulnerable and non-vulnerable code snippets;
+\end{itemize}
+\subsection{Techniques}
+AI-based vulnerability detection techniques can be broadly categorized based on the algorithms they use.
+\subsubsection{Sequence-based models}
+Sequence-based models are machine learning models that process input data as sequences of elements (tokens, characters, etc.), to identify patterns indicative of vulnerabilities.
+Common sequence-based models include:
+\begin{itemize}
+    \item \textbf{Recurrent Neural Networks (RNNs)};
+    \item \textbf{Long Short-Term Memory (LSTM) networks};
+    \item \textbf{transformer-based models};
+\end{itemize}
+The code is typically tokenized and represented as sequences before being fed into these models for training.
+\subsubsection{Graph-based models}
+Graph-based models have shown capabilities in capturing the structural relationships within code, making them suitable for vulnerability detection tasks.
+These models work via message passing between nodes in a graph representation of the code, allowing them to learn complex global features.
+Common graph-based models include:
+\begin{itemize}
+    \item \textbf{Graph Neural Networks (GNNs)};
+    \item \textbf{Graph Convolutional Networks (GCNs)};
+    \item \textbf{Graph Attention Networks (GATs)}.
+\end{itemize}
+Graph-based models often utilize Abstract Syntax Trees (ASTs) or Control Flow Graphs (CFGs) to represent the code structure.
+First they need to decide on prediction granularity (file-level, function-level, line-level) before training. Usually an intermidiate representation of the code is created to extract graph features.
+\subsection{Limitations}
