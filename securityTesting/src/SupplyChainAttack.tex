@@ -1,0 +1,48 @@
+\section{Supply Chain Attack}
+To understand supply chain attacks, it's essential to grasp the concept of dependencies in software development.
+\subsection{Dependencies in Software Development}
+In modern software development, applications often rely on external libraries, frameworks, and tools to enhance functionality and to avoid reinventing the wheel. 
+These external components are known as dependencies, that are usually managed through package managers (like npm, Maven, pip, etc.).
+\\Dependencies can be:
+\begin{itemize}
+    \item \textbf{Direct dependencies}: libraries or packages that are explicitly included in a project's codebase. We are the owners of these dependencies;
+    \item \textbf{Transitive dependencies}: libraries that are not directly included but are dependencies of the direct dependencies.
+\end{itemize}
+Dependencies can introduce vulnerabilities in our software, if they contain security flaws or if they are compromised.
+
+\subsection{What is a Supply Chain?}
+A software supply chain refers to the entire ecosystem of components, tools, and processes involved in the development, distribution, and maintenance of software applications.
+Usually, the inventory of a software supply chain is declared in a \textbf{Software Bill of Materials} (SBOM).
+
+\subsection{Supply Chain Attacks}
+A supply chain attack targets third-party components or services that are part of the software supply chain, to compromise a target application.
+They are indirect, in the sense that attackers do not directly attack the target application, but rather exploit vulnerabilities in the components or services it relies on.
+
+\subsubsection*{Mechanism of Supply Chain Attacks}
+The typical steps of a supply chain attack are:
+\begin{itemize}
+    \item The attacker identifies a \textbf{software vendor} to add malicious code to their product;
+    \item The malicious code is then distributed to the vendor's customers through legitimate software updates;
+    \item When the target application updates or installs the compromised component, the malicious code is executed within the target environment.
+\end{itemize}
+
+\subsubsection*{Attack Vectors}
+Common vectors for supply chain attacks include:
+\begin{itemize}
+    \item \textbf{Source code}: attackers compromise the proprietary code. Usually the credental of developers are needed as well as the access to the repository;
+    \item \textbf{Developer accounts}: attackers gain access to developer accounts to inject malicious code into the software during development or distribution;
+    \item \textbf{Dependencies}: attackers compromise third-party libraries or packages that are used as dependencies in the target application;
+    \item \textbf{Build tooling}: attackers can compromise build tools or CI/CD pipelines to inject malicious code during the build process;
+    \item \textbf{Updates}: attackers compromise the software update mechanism, distributing malicious updates to users.
+\end{itemize}
+
+\subsubsection*{Mitigation Strategies}
+To mitigate supply chain attacks, organizations can implement several strategies:
+\begin{itemize}
+    \item \textbf{Remove unnecessary dependencies}: regularly review and audit dependencies to remove any that are not essential;
+    \item \textbf{Use trusted sources}: only use dependencies from reputable sources and verify their integrity;
+    \item \textbf{Inventory management}: maintain an up-to-date SBOM to track all components and dependencies used in the software;
+    \item \textbf{Monitor for vulnerabilities}: use automated tools to monitor dependencies for known vulnerabilities;
+    \item \textbf{Monitor unmaintaned dependencies}: be cautious when using dependencies that are no longer actively maintained. Consider finding alternatives or forking and maintaining them internally;
+\end{itemize}
+
