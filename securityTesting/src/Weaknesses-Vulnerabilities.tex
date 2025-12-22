@@ -1,5 +1,4 @@
 \section{Code Weaknesses and Vulnerabilities}
-\subsection{Most common Weaknesses}
 We now present a selection of the \textbf{most dangerous software weaknesses}, to illustrate common coding patterns that lead to security vulnerabilities and to guide analysis and testing efforts.
 Knowing this classification can help us with:
 \begin{itemize}
@@ -7,9 +6,9 @@ Knowing this classification can help us with:
     \item \textbf{improving the development process}: know solutions (ex: patterns, guidelines) to help developers improve their software, avoiding the introduction of weaknesses;
     \item \textbf{driving bug-fixing}: prioritize the issues to solve, helping also to understand how to fix it.
 \end{itemize}
-
+\subsection{Common Weakness Enumeration (CWE)}
 \subsubsection{Use-After-Free(CWE-416)}
-\paragraph{Description:} The software \textbf{reuses} or \textbf{references memory}, after it has been \textbf{freed}. At some point afterwards, the memory may be allocated to another pointer. Any operation using the original pointer is no longer valid.
+The software \textbf{reuses} or \textbf{references memory}, after it has been \textbf{freed}. At some point afterwards, the memory may be allocated to another pointer. Any operation using the original pointer is no longer valid.
 
 \begin{lstlisting}[language=C]
     char* ptr = (char*)malloc (SIZE);
@@ -27,10 +26,10 @@ Knowing this classification can help us with:
 
 \paragraph{Prevention:} Once freed, all pointers should be set to \textbf{NULL}.
 
-\paragraph{Detection:} Using \textbf{static analysis}.
+\paragraph{Detection:} Using \textbf{static analysis} or \textbf{Fuzzing}.
 
 \subsubsection{Heap-based Buffer Overflow(CWE-122)}
-\paragraph{Description:} A particular case of the \textbf{buffer overflow}, where the buffer is allocated in the \textbf{heap} portion of the memory. This means that the buffer was allocated using \textbf{malloc()}.
+A particular case of the \textbf{buffer overflow}, where the buffer is allocated in the \textbf{heap} portion of the memory. This means that the buffer was allocated using \textbf{malloc()}.
 
 \begin{lstlisting}[language=C]
     #define BUFSIZE 4
@@ -45,10 +44,10 @@ The problem here is caused by the function \verb|strcpy()|, which has no limits 
 \paragraph{Prevention:} Other equivalents, but \textbf{safer} functions should be used. For example \verb|strncpy()| takes as an argument the maximum number of characters that should be copied.
 \\Also, automatic buffer overflow detection mechanisms can be used.
 
-\paragraph{Detection:} Using \textbf{static analysis}.
+\paragraph{Detection:} Using \textbf{static analysis} or \textbf{Fuzzing}.
 
 \subsubsection{Out-of-bounds Write(CWE-787)}
-\paragraph{Description:} The software writes data past the end, or before the beginning of the intended buffer.
+The software writes data past the end, or before the beginning of the intended buffer.
 
 \begin{lstlisting}[language=C]
     int id_sequence[3];
@@ -61,10 +60,10 @@ The problem here is caused by the function \verb|strcpy()|, which has no limits 
 
 \paragraph{Prevention:} Always verify that the buffer is as large as specified and that its boundaries are respected.
 
-\paragraph{Detection:} Using \textbf{static analysis} and \textbf{dynamic analysis}
+\paragraph{Detection:} Using \textbf{static analysis} and \textbf{dynamic analysis}.
 
 \subsubsection{Improper Input Validation(CWE-20)}
-\paragraph{Description:} The software receives input values, but it \textbf{does not validate} or \textbf{incorrectly validates} them. In case of no-validation, unintended input values can \textbf{alter the program control flow}.
+The software receives input values, but it \textbf{does not validate} or \textbf{incorrectly validates} them. In case of no-validation, unintended input values can \textbf{alter the program control flow}.
 
 \begin{lstlisting}[language=C]
     public static final double price = 20.00;
@@ -79,7 +78,7 @@ In this example, if the user inputs a negative number for the quantity, it can l
 \paragraph{Detection:} Using \textbf{static analysis} and \textbf{dynamic analysis}
 
 \subsubsection{Improper Neutralization of Special Elements used in an OS Command(CWE-78)}
-\paragraph{Description:} The software constructs an \textbf{OS command} using an \textbf{external input}, but it does not neutralize special elements that could modify the intended OS command.
+The software constructs an \textbf{OS command} using an \textbf{external input}, but it does not neutralize special elements that could modify the intended OS command.
 
 \begin{lstlisting}[language=php]
     $userName = $_POST["user"];
@@ -94,7 +93,7 @@ Since the \verb|;| works as a command separator in Linux, such input would delet
 \paragraph{Detection:} Using \textbf{dynamic analysis}
 
 \subsubsection{De-serialization of Untrusted Data(CWE-502)}
-\paragraph{Description:} The software deserializes untrusted data without verifying that the resulting data will be valid.
+The software deserializes untrusted data without verifying that the resulting data will be valid.
 
 \begin{lstlisting}[language=Java]
     try {
@@ -112,7 +111,7 @@ The code deserializes an object from a file, received from an UI button and does
 
 \subsubsection{Server-Side Request Forgery(CWE-918)}
 \label{Server-Side Request Forgery}
-\paragraph{Description:} A security vulnerability in a \textbf{server A} allows an attacker to cause the \textbf{server-side application} to make requests to an unintended location (i.e., \textbf{another server B} or service). 
+A security vulnerability in a \textbf{server A} allows an attacker to cause the \textbf{server-side application} to make requests to an unintended location (i.e., \textbf{another server B} or service). 
 \\The \textbf{attacker’s request} is \textbf{sent from the back end of the server}, so the \textbf{target service believes it came from a legitimate source}. 
 Attackers can \textbf{bypass access controls} (i.e., firewalls) that \textbf{prevent direct attacks on the target server} by exploiting trusted relationships between servers. 
 The compromised server can also be used as a proxy to conduct port scanning of internal hosts or to access restricted URLs and documents.
@@ -129,7 +128,7 @@ The compromised server can also be used as a proxy to conduct port scanning of i
 \paragraph{Detection:} Automated static analysis
 
 \subsubsection{Access of Resource Using Incompatible Type(CWE-843)}
-\paragraph{Description:} The software initializes a resource such as a pointer, object or variable, using \textbf{one type}, but later accesses that resource using a type that is incompatible with the original type. Type confusion can lead to out-of-bounds memory access.
+The software initializes a resource such as a pointer, object or variable, using \textbf{one type}, but later accesses that resource using a type that is incompatible with the original type. Type confusion can lead to out-of-bounds memory access.
 
 \begin{lstlisting}[language=php]
     $value = $_GET['value'];
@@ -144,7 +143,7 @@ An attacker could supply an input string such as \verb|value[] = 123|. From that
 \paragraph{Detection:} Using \textbf{static analysis}
 
 \subsubsection{Improper Limitation of a Pathname to a Restricted Directory(CWE-22)}
-\paragraph{Description:} The product uses an \textbf{external input} to \textbf{construct a pathname} for a file or directory, located into a restricted parent directory. Without the neutralization of special elements, the path can relate to a different location, not supposed to be accessible.
+The product uses an \textbf{external input} to \textbf{construct a pathname} for a file or directory, located into a restricted parent directory. Without the neutralization of special elements, the path can relate to a different location, not supposed to be accessible.
 
 \begin{lstlisting}[language=Java]
     String path = getInputPath();
@@ -161,7 +160,7 @@ An attacker could supply an input string such as \verb|value[] = 123|. From that
 \paragraph{Detection:} Using \textbf{static analysis} or \textbf{dynamic analysis}.
 
 \subsubsection{Missing Authentication for Critical Function}(CWE-306)
-\paragraph{Description:} The product \textbf{does not perform any authentication} for a functionality that requires a provable user identity.
+The product \textbf{does not perform any authentication} for a functionality that requires a provable user identity.
 \paragraph{Prevention:} Where possible, avoid using custom authentication routines. Instead, consider using authentication capabilities as provided by libraries or frameworks.
 
 \paragraph{Detection:} Using \textbf{static analysis} or \textbf{dynamic analysis}, such as \textbf{vulnerability scanning}.
@@ -170,7 +169,7 @@ An attacker could supply an input string such as \verb|value[] = 123|. From that
 \textbf{OWASP} is an open source project, providing guides, guidelines and suggestions to develop and test secure applications. Its Top-10 lists the most critical security risks for web applications.
 
 \subsubsection{Broken Access Control (A01-2021)}
-\paragraph{Description:} The \textbf{access control} enforces policy such that \textbf{users cannot act outside their intended permissions}. Its failure leads to \textbf{unauthorized information} disclosure, modification, or destruction.
+The \textbf{access control} enforces policy such that \textbf{users cannot act outside their intended permissions}. Its failure leads to \textbf{unauthorized information} disclosure, modification, or destruction.
 
 \paragraph{Example:} The application uses unverified data in SQL to access information:
 
@@ -191,7 +190,7 @@ If an attacker modifies the browser's \textbf{acct parameter} with whatever acco
 \end{itemize}
 
 \subsubsection{Cryptography Failures (A02-2021)}
-\paragraph{Description:} Violation of the protection needed for exchanged data. Data can't be transmitted in clear text, but should always be encrypted, using properly set cryptographic algorithms.
+Violation of the protection needed for exchanged data. Data can't be transmitted in clear text, but should always be encrypted, using properly set cryptographic algorithms.
 \paragraph{Example:} An application correctly encrypts credit card numbers in a database before storing them. Data is automatically decrypted once retrieved, allowing an SQL injection to retrieve all the information in clear text.
 \paragraph{Prevention:}
 Proper encryption, with a proper setting of the used cryptographic mechanism.
@@ -208,7 +207,7 @@ If the attacker manages to set the id parameter for example to \textit{‘ or �
 \paragraph{Prevention:} Use server-side input validation, checking in particular for escape characters.
 
 \subsubsection{Insecure design (A04-2021)}
-\paragraph{Description:} Insecure design concerns weaknesses related to missing or ineffective control design. An usual example could be the use of "questions and answers" for the credential recovery workflow. They in fact cannot be trusted as evidence of user identity.
+Insecure design concerns weaknesses related to missing or ineffective control design. An usual example could be the use of "questions and answers" for the credential recovery workflow. They in fact cannot be trusted as evidence of user identity.
 \paragraph{Prevention:} Always adopt a secure design methodology.
 
 \subsubsection{Security Misconfiguration (A05-2021)}
@@ -225,7 +224,7 @@ Refers to a variety of situations, such as:
 A secure installation process should be implemented. Always review and update configuration.
 
 \subsubsection{Vulnerable and Outdated Components (A06-2021)}
-\paragraph{Description:} The component of a software can be vulnerable, unsupported, or out of date.
+The component of a software can be vulnerable, unsupported, or out of date.
 \paragraph{Prevention:} 
 \begin{itemize}
     \item Remove unused dependencies, unnecessary features, components and documentation;
@@ -234,7 +233,7 @@ A secure installation process should be implemented. Always review and update co
 \end{itemize}
 
 \subsubsection{Identification and Authentication Failures (A07-2021)}
-\paragraph{Description:} \textbf{Authentication}, \textbf{confirmation} of user's \textbf{identity} and \textbf{session management} are critical to protect against authentication-related attacks.
+\textbf{Authentication}, \textbf{confirmation} of user's \textbf{identity} and \textbf{session management} are critical to protect against authentication-related attacks.
 \paragraph{Prevention:}
 \begin{itemize}
     \item Implement proper identification and authentication processes (ex: MFA, to prevent brute force, stolen credential reuse attacks);

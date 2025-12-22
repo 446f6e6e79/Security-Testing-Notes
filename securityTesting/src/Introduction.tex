@@ -1,9 +1,9 @@
 \section{Introduction}
+Before starting to analyze the different types of \textbf{software vulnerabilities} and the related \textbf{testing techniques}, it's important to define some \textbf{basic concepts} and \textbf{terminology} that will be used throughout the document.
 \subsection{Definitions}
-We are now going to define some important terms that will be used throughout the document.
 \begin{definitions}
     \item[Software:] software can be defined as a set of \textbf{programs} and \textbf{data}, that provides \textbf{functionality}. Software and functionality always come with certain risks.
-    \item[Security:] \textbf{Understanding} and \textbf{identifying} security risks, induced by a software, and how to \textbf{mitigate them}.
+    \item[Security:] managing the risks introduced by software. This includes \textbf{understanding} and \textbf{identifying} security risks, and how to \textbf{mitigate them}.
     \item[Secure software:] a software is \textbf{considered secure} if it satisfies a series of security objectives, such as:
     \begin{itemize}
         \item \textbf{Confidentiality}: \textbf{unauthorized users} cannot \textbf{have access} or read information;
@@ -17,16 +17,34 @@ We are now going to define some important terms that will be used throughout the
     \begin{itemize}
         \item \textbf{Safety}: protecting the system from \textbf{accidental risks};
         \item \textbf{Security}: \textbf{mitigating} the risk of danger caused by \textbf{intentional} or \textbf{malicious actions}.
+        If a software does not achieve the security requirements, it can lead to security failures.
     \end{itemize}
     \item[Weakness:] a condition in a software (bug) that, under certain circumstances, could contribute to the introduction of vulnerabilities.
-    \item[Vulnerability:] a chain of \textbf{weaknesses} linked by causality. If \textbf{exploited} it leads to a \textbf{security failure}.
+
+    \item[Vulnerability:] a chain of \textbf{weaknesses} linked by causality. If \textbf{exploited}, this can lead to a \textbf{security failure}.
 
     \item[Security risk:] refers to the \textbf{probability} that a threat (any external actor) will \textbf{exploit a vulnerability}, combined with the \textbf{resulting impact} (damage).
 
     \item[CWE:] \textbf{Common Weakness Enumeration}, provides a \textbf{public list} of the most common software and hardware \textbf{weaknesses} that can contribute to security vulnerabilities.
 
     \item [CVE:] \textbf{Common Vulnerabilities and Exposure}, is a public list of \textbf{vulnerabilities} in widely-used software components.
+    
+    \item [NVD:] \textbf{National Vulnerability Database}, public available database of CVEs. It provides additional information, such as \textbf{severity scores} and \textbf{impact ratings}.
 \end{definitions}
+
+\subsection{Bug Exploitation}
+A \textbf{bug} is an error in the software code that can lead to unexpected behavior. An \textbf{attacker} will try to \textbf{exploit} a bug to make
+the software behave in an unintended way, to achieve its malicious goals.
+To achieve its goals, the attacker may need several exploits, chained together, composing an \textbf{attack path}.
+
+\subsection{Security Meta-Model}
+In the context of software security, a meta-model can be defined to represent the relationships between different security concepts, such as vulnerabilities, threats, and attacks. 
+This meta-model can help security professionals understand the attack surface of a system and identify potential weaknesses.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/securityMetaModel.png}
+    \caption{Security Meta-Model}
+\end{figure}
 
 \subsection{Software Development Life Cycle}
 The \textbf{SDLC} is the series of \textbf{processes} and \textbf{procedures} that enables teams to \textbf{create software} and applications. The cycle is composed of various phases:
@@ -77,10 +95,12 @@ There are some frameworks, such as \textbf{OWASP} that can help in the secure co
 \subparagraph{Security Testing:} mainly composed of two isolated phases:
 \begin{itemize}
     \item \textbf{Static Analysis}: tries to identify weaknesses, without executing the program;
+    \item \textbf{Vulnerability Scanning}: injection of malicious inputs in the program, to identify vulnerabilities.
 \end{itemize}
 
 \paragraph{Testing:}
-Other testing should be done once the final product has been developed. Different types of tests are usually run, such as:
+Testing is suggested to be done throughout the whole development process, to identify bugs as soon as possible.
+Different types of tests are usually run, such as:
 \begin{itemize}
     \item \textbf{Dynamic Analysis}: identifies weaknesses by running software;
     \item \textbf{Fuzzing}: involves giving random data to a program. It helps in finding bugs that humans often miss;
@@ -89,5 +109,6 @@ Other testing should be done once the final product has been developed. Differen
 Regardless, bugs should always be fixed ASAP, to reduce the cost of fixing them.
 
 \subsubsection{DevOps}
-The \textbf{DevOps} cycle is based on two main ideas: \textbf{rapid delivery} of new software and \textbf{quick feedback}. Developers continuously deliver new features in a short time span.
-Developers regularly merge their code changes in a central repository, where it gets automatically built, tested, and prepared for a release to production.
+The \textbf{DevOps} cycle is based on two main ideas: \textbf{rapid delivery} of new software and \textbf{quick feedback}. 
+Developers continuously deliver new features in a short time span, based on 8 phases.
+Developers regularly merge their code changes in a central repository (CI \textit{Continuous Integration}), where it gets automatically built, tested, and prepared for a release to production (CD \textit{Continuous Delivery}).

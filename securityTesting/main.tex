@@ -1,6 +1,4 @@
 \documentclass{article}
-
-% Importa tutti i pacchetti e le configurazioni
 \input{setup.tex}
 
 \title{Security Testing}
@@ -8,14 +6,17 @@
 \date{September 2025}
 
 \begin{document}
+%Use roman page numbering for the front matter
+\pagenumbering{roman}
 
 %Title and table of contents
 \maketitle
 \newpage
 \tableofcontents
-
 \newpage
 
+%Switch to arabic page numbering for the main matter
+\pagenumbering{arabic}
 \input{src/Introduction.tex}
 \input{src/Weaknesses-Vulnerabilities.tex}
 \input{src/SQLInjection.tex}
