@@ -7,7 +7,7 @@ Knowing this classification can help us with:
     \item \textbf{driving bug-fixing}: prioritize the issues to solve, helping also to understand how to fix it.
 \end{itemize}
 \subsection{Common Weakness Enumeration (CWE)}
-\subsubsection{Use-After-Free(CWE-416)}
+\subsubsection*{Use-After-Free(CWE-416)}
 The software \textbf{reuses} or \textbf{references memory}, after it has been \textbf{freed}. At some point afterwards, the memory may be allocated to another pointer. Any operation using the original pointer is no longer valid.
 
 \begin{lstlisting}[language=C]
@@ -28,7 +28,7 @@ The software \textbf{reuses} or \textbf{references memory}, after it has been \t
 
 \paragraph{Detection:} Using \textbf{static analysis} or \textbf{Fuzzing}.
 
-\subsubsection{Heap-based Buffer Overflow(CWE-122)}
+\subsubsection*{Heap-based Buffer Overflow(CWE-122)}
 A particular case of the \textbf{buffer overflow}, where the buffer is allocated in the \textbf{heap} portion of the memory. This means that the buffer was allocated using \textbf{malloc()}.
 
 \begin{lstlisting}[language=C]
@@ -46,7 +46,7 @@ The problem here is caused by the function \verb|strcpy()|, which has no limits 
 
 \paragraph{Detection:} Using \textbf{static analysis} or \textbf{Fuzzing}.
 
-\subsubsection{Out-of-bounds Write(CWE-787)}
+\subsubsection*{Out-of-bounds Write(CWE-787)}
 The software writes data past the end, or before the beginning of the intended buffer.
 
 \begin{lstlisting}[language=C]
@@ -62,7 +62,7 @@ The software writes data past the end, or before the beginning of the intended b
 
 \paragraph{Detection:} Using \textbf{static analysis} and \textbf{dynamic analysis}.
 
-\subsubsection{Improper Input Validation(CWE-20)}
+\subsubsection*{Improper Input Validation(CWE-20)}
 The software receives input values, but it \textbf{does not validate} or \textbf{incorrectly validates} them. In case of no-validation, unintended input values can \textbf{alter the program control flow}.
 
 \begin{lstlisting}[language=C]
@@ -77,7 +77,7 @@ In this example, if the user inputs a negative number for the quantity, it can l
 
 \paragraph{Detection:} Using \textbf{static analysis} and \textbf{dynamic analysis}
 
-\subsubsection{Improper Neutralization of Special Elements used in an OS Command(CWE-78)}
+\subsubsection*{Improper Neutralization of Special Elements used in an OS Command(CWE-78)}
 The software constructs an \textbf{OS command} using an \textbf{external input}, but it does not neutralize special elements that could modify the intended OS command.
 
 \begin{lstlisting}[language=php]
@@ -92,7 +92,7 @@ Since the \verb|;| works as a command separator in Linux, such input would delet
 
 \paragraph{Detection:} Using \textbf{dynamic analysis}
 
-\subsubsection{De-serialization of Untrusted Data(CWE-502)}
+\subsubsection*{De-serialization of Untrusted Data(CWE-502)}
 The software deserializes untrusted data without verifying that the resulting data will be valid.
 
 \begin{lstlisting}[language=Java]
@@ -109,7 +109,7 @@ The code deserializes an object from a file, received from an UI button and does
 
 \paragraph{Detection:} Using \textbf{static analysis}
 
-\subsubsection{Server-Side Request Forgery(CWE-918)}
+\subsubsection*{Server-Side Request Forgery(CWE-918)}
 \label{Server-Side Request Forgery}
 A security vulnerability in a \textbf{server A} allows an attacker to cause the \textbf{server-side application} to make requests to an unintended location (i.e., \textbf{another server B} or service). 
 \\The \textbf{attacker’s request} is \textbf{sent from the back end of the server}, so the \textbf{target service believes it came from a legitimate source}. 
@@ -127,7 +127,7 @@ The compromised server can also be used as a proxy to conduct port scanning of i
 
 \paragraph{Detection:} Automated static analysis
 
-\subsubsection{Access of Resource Using Incompatible Type(CWE-843)}
+\subsubsection*{Access of Resource Using Incompatible Type(CWE-843)}
 The software initializes a resource such as a pointer, object or variable, using \textbf{one type}, but later accesses that resource using a type that is incompatible with the original type. Type confusion can lead to out-of-bounds memory access.
 
 \begin{lstlisting}[language=php]
@@ -142,7 +142,7 @@ An attacker could supply an input string such as \verb|value[] = 123|. From that
 
 \paragraph{Detection:} Using \textbf{static analysis}
 
-\subsubsection{Improper Limitation of a Pathname to a Restricted Directory(CWE-22)}
+\subsubsection*{Improper Limitation of a Pathname to a Restricted Directory(CWE-22)}
 The product uses an \textbf{external input} to \textbf{construct a pathname} for a file or directory, located into a restricted parent directory. Without the neutralization of special elements, the path can relate to a different location, not supposed to be accessible.
 
 \begin{lstlisting}[language=Java]
@@ -159,7 +159,7 @@ The product uses an \textbf{external input} to \textbf{construct a pathname} for
 \end{itemize}
 \paragraph{Detection:} Using \textbf{static analysis} or \textbf{dynamic analysis}.
 
-\subsubsection{Missing Authentication for Critical Function}(CWE-306)
+\subsubsection*{Missing Authentication for Critical Function (CWE-306)}
 The product \textbf{does not perform any authentication} for a functionality that requires a provable user identity.
 \paragraph{Prevention:} Where possible, avoid using custom authentication routines. Instead, consider using authentication capabilities as provided by libraries or frameworks.
 
@@ -167,8 +167,9 @@ The product \textbf{does not perform any authentication} for a functionality tha
 
 \subsection{Most common security risks}
 \textbf{OWASP} is an open source project, providing guides, guidelines and suggestions to develop and test secure applications. Its Top-10 lists the most critical security risks for web applications.
+In the following, we present the OWASP Top-10 of 2021.
 
-\subsubsection{Broken Access Control (A01-2021)}
+\subsubsection*{Broken Access Control (A01-2021)}
 The \textbf{access control} enforces policy such that \textbf{users cannot act outside their intended permissions}. Its failure leads to \textbf{unauthorized information} disclosure, modification, or destruction.
 
 \paragraph{Example:} The application uses unverified data in SQL to access information:
@@ -189,14 +190,14 @@ If an attacker modifies the browser's \textbf{acct parameter} with whatever acco
     \item \textbf{Access control unit should be included in the tests}.
 \end{itemize}
 
-\subsubsection{Cryptography Failures (A02-2021)}
+\subsubsection*{Cryptography Failures (A02-2021)}
 Violation of the protection needed for exchanged data. Data can't be transmitted in clear text, but should always be encrypted, using properly set cryptographic algorithms.
 \paragraph{Example:} An application correctly encrypts credit card numbers in a database before storing them. Data is automatically decrypted once retrieved, allowing an SQL injection to retrieve all the information in clear text.
 \paragraph{Prevention:}
 Proper encryption, with a proper setting of the used cryptographic mechanism.
 
-\subsubsection{Injection (A03-2021)}
-\paragraph{Description:}
+\subsubsection*{Injection (A03-2021)}
+
 An application is vulnerable to this type of attack when user input data is not validated by the application before using it as command parameters.
 \paragraph{Example:}   
 \begin{lstlisting}[language=Java]
@@ -206,12 +207,12 @@ String query = "SELECT \* FROM accounts WHERE custID='" +
 If the attacker manages to set the id parameter for example to \textit{‘ or ‘1’=’1} the query will return all the records from the account table.
 \paragraph{Prevention:} Use server-side input validation, checking in particular for escape characters.
 
-\subsubsection{Insecure design (A04-2021)}
+\subsubsection*{Insecure design (A04-2021)}
 Insecure design concerns weaknesses related to missing or ineffective control design. An usual example could be the use of "questions and answers" for the credential recovery workflow. They in fact cannot be trusted as evidence of user identity.
 \paragraph{Prevention:} Always adopt a secure design methodology.
 
-\subsubsection{Security Misconfiguration (A05-2021)}
-\paragraph{Description:}
+\subsubsection*{Security Misconfiguration (A05-2021)}
+
 Refers to a variety of situations, such as:
 \begin{itemize}
     \item Missing appropriate security hardening or improperly configured permissions;
@@ -223,7 +224,7 @@ Refers to a variety of situations, such as:
 \paragraph{Prevention:}
 A secure installation process should be implemented. Always review and update configuration.
 
-\subsubsection{Vulnerable and Outdated Components (A06-2021)}
+\subsubsection*{Vulnerable and Outdated Components (A06-2021)}
 The component of a software can be vulnerable, unsupported, or out of date.
 \paragraph{Prevention:} 
 \begin{itemize}
@@ -232,7 +233,7 @@ The component of a software can be vulnerable, unsupported, or out of date.
     \item Obtain components only from official sources;
 \end{itemize}
 
-\subsubsection{Identification and Authentication Failures (A07-2021)}
+\subsubsection*{Identification and Authentication Failures (A07-2021)}
 \textbf{Authentication}, \textbf{confirmation} of user's \textbf{identity} and \textbf{session management} are critical to protect against authentication-related attacks.
 \paragraph{Prevention:}
 \begin{itemize}
@@ -241,13 +242,15 @@ The component of a software can be vulnerable, unsupported, or out of date.
     \item Use a \textbf{server-side}, secure, \textbf{session manager}.
 \end{itemize}
 
-\subsubsection{Software and Data Integrity Failures (A08-2021)}
-\paragraph{Description:}
+\subsubsection*{Software and Data Integrity Failures (A08-2021)}
+Relates to code and infrastructure that does not protect against integrity violations. An example is the use of \textbf{untrusted CI/CD pipelines}, 
+or the use of \textbf{unverified software libraries}. Attackers can exploit these weaknesses to inject malicious code into the application.
 \paragraph{Prevention:}
+Ensure that all dependencies come from trusted sources, and verify their integrity.
 
-\subsubsection{Security Logging and Monitoring Failures (A09-2021)}
-\paragraph{Description:}It relates to the logging and monitoring capability to detect security breaches. You will make yourself vulnerable to information leakage by making logging and alerting events visible to the users.
+\subsubsection*{Security Logging and Monitoring Failures (A09-2021)}
+It relates to the logging and monitoring capability to detect security breaches. You will make yourself vulnerable to information leakage by making logging and alerting events visible to the users.
 \paragraph{Prevention:} Ensure proper logging and monitoring.
 
-\subsubsection{Server-Side Request Forgery (A10-2021)}
+\subsubsection*{Server-Side Request Forgery (A10-2021)}
 Already talked about at \ref{Server-Side Request Forgery}.

@@ -1,13 +1,57 @@
 \section{XSS (Cross-Site Scripting)}
-\textbf{Cross-Site Scripting} (XSS) attacks are a type of injection in which \textbf{malicious scripts} are injected into trusted websites. The end user's browser has no way to know that the script should not be trusted and will execute the script. It can access any cookies, session tokens or other sensitive information retained by the browser.
+\textit{Cross-Site Scripting} (XSS) attacks are a type of injection in which malicious scripts are injected into trusted websites.
+An attacker uses a web application to send malicious code, generally in the form of a browser-side script, to a different end user.
+ The end user's browser has no way to know that the script should not be trusted and will execute the script. 
+ It can access any cookies, session tokens or other sensitive information retained by the browser.
 \subsection{Underlying idea}
-The problem originates when the \textbf{user input} is directly \textbf{displayed in an output web page}, without any sanitization. The typical attack follows this flow:
+The problem originates when user input is directly included in a web page output without proper validation or sanitization. In such cases, an attacker can inject malicious code that is executed by the victim’s browser. A typical reflected XSS attack follows this flow:
 \begin{enumerate}
-    \item The attacker identifies a web site with XSS vulnerabilities;
-    \item The attacker creates a malicious URL/ script sending malicious input to the attacker website;
-    \item The attacker tries to introduce the victim (user of the attacked website) to click on the URL;
-    \item The victim clicks the URL, executing the malicious code. The website response page includes malicious links or malicious JS code, executed on the victim's browser.
+    \item The attacker identifies a website that reflects user-controlled input in its responses;
+    \item The attacker crafts a malicious URL containing injected client-side code;
+    \item The attacker uses social engineering techniques (e.g., email or messaging) to induce a victim to visit the malicious URL;
+    \item The victim clicks the URL, and the injected code is executed in the context of the vulnerable website.
 \end{enumerate}
+
+\subsection{Example}
+Consider a web application that allows users to search for content and displays the searched term on the results page.
+Suppose the request is sent via the URL:
+\begin{verbatim}
+http://search.com/?query=<UserInput>
+\end{verbatim}
+The server dynamically generates the following response:
+\begin{verbatim}
+<html>
+  <body>
+    Search results for: <UserInput>
+    <ol>
+      <li>http://example.com/result1</li>
+      <li>http://example.com/result2</li>
+    </ol>
+  </body>
+</html>
+\end{verbatim}
+If the attacker provides a malicious input such as:
+\begin{verbatim}
+<script>alert('XSS')</script>
+\end{verbatim}
+the resulting URL becomes:
+\begin{verbatim}
+http://search.com/?query=<script>alert('XSS')</script>
+\end{verbatim}
+When the victim visits this URL, the server reflects the input without sanitization, producing the following response:
+\begin{verbatim}
+<html>
+  <body>
+    Search results for: <script>alert('XSS')</script>
+    <ol>
+      <li>http://example.com/result1</li>
+      <li>http://example.com/result2</li>
+    </ol>
+  </body>
+</html>
+\end{verbatim}
+As a consequence, the browser interprets the injected code as legitimate JavaScript and executes it in the security context of \texttt{search.com}. 
+This allows the attacker to run arbitrary client-side code, potentially enabling actions such as session hijacking, credential theft, or manipulation of page content.
 
 \subsection{XSS Types}
 There are three main types of XSS attacks, based on how the malicious script is delivered and executed.
@@ -17,11 +61,7 @@ There are three main types of XSS attacks, based on how the malicious script is 
   in the browser. The payload is not stored on the server; instead, an attacker crafts a URL (or form) containing the payload 
   and convinces a victim (for example, via social engineering) to visit it. When the victim follows the link, the server responds 
   with a page that includes the malicious code, which then executes in the victim's browser.
-  \paragraph{Example:}
-  \begin{verbatim}
-  https://example.com/search?q=<script>script_here</script>
-  \end{verbatim}
-  The server responds with a webpage that includes the parameter \verb|q| directly; in this case, the script is executed in the victim's browser.
+  This is the most common type of XSS, and an example was already shown in the previous section.
   \subsubsection[short]{Stored (persistent)}
   User-supplied input is stored on the target server (for example, in a database, 
   profile field, comment, or message) and later served to other users without proper encoding or sanitization. 
@@ -39,7 +79,8 @@ There are three main types of XSS attacks, based on how the malicious script is 
   \end{verbatim}
   When other users load the page that lists comments, the server includes the stored comment directly in the HTML, and the script executes in each viewer's browser.
   \subsubsection[short]{DOM-Based}
-  A form of XSS in which the entire unsafe data flow occurs in the browser: client-side JavaScript reads attacker-controlled data (for example from the URL fragment, query string, \texttt{window.name}, or \texttt{postMessage}) and then unsafely writes it into the DOM, causing execution — without the payload ever being reflected or stored by the web server.
+  A form of XSS in which the entire unsafe data flow occurs in the browser. For example, the malicious payload could be included in the URL of the page, and a sensitive JavaScript operation (e.g., document.write, innerHTML, \dots) uses the data to modify the DOM in an unsafe way. 
+  In this case, the server does not reflect or store the malicious input; instead, the vulnerability arises from client-side JavaScript code that processes untrusted data without proper validation or sanitization.
   \paragraph{Vulnerable example (client-side)}
   \begin{verbatim}
   <!-- index.html (static) -->
@@ -54,8 +95,8 @@ There are three main types of XSS attacks, based on how the malicious script is 
 \subsection{XSS mitigation}
 No single technique can solve XSS, but rather a combination of strategies is required:
 \begin{itemize}
-    \item \textbf{Treat all input as untrusted:} Any data coming from an external source — including users, third-party services, or even other internal systems — must be treated as untrusted.
-    \item \textbf{Contextual escaping / encoding:} Always escape or encode user input according to the context in which it will appear (HTML body, HTML attribute, JavaScript, CSS, URL, etc.). Use the framework’s built-in escaping functions whenever possible.
-    \item \textbf{Sanitize HTML if necessary:} If user input needs to include HTML (i.e., formatted comments), use a whitelist-based sanitizer that removes unsafe tags and attributes.
-    \item \textbf{Server-side validation:} Validate input for expected format, type, or length. Note that validation alone is insufficient; always combine it with encoding or escaping on output.
+    \item Treat all input as untrusted: Any data coming from an external source — including users, third-party services, or even other internal systems — must be treated as untrusted.
+    \item Contextual escaping / encoding: Always escape or encode user input according to the context in which it will appear (HTML body, HTML attribute, JavaScript, CSS, URL, etc.). Use the framework’s built-in escaping functions whenever possible.
+    \item Sanitize HTML if necessary: If user input needs to include HTML (i.e., formatted comments), use a whitelist-based sanitizer that removes unsafe tags and attributes.
+    \item Server-side validation: Validate input for expected format, type, or length. Note that validation alone is insufficient; always combine it with encoding or escaping on output.
 \end{itemize}

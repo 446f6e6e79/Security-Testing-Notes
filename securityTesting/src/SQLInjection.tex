@@ -1,28 +1,19 @@
 \section{SQL Injection}
 \label{sec:sql-injection}
-\textbf{SQL injection} is a vulnerability that allows an attacker to \textbf{inject unintended SQL code} into \textbf{queries} executed by an application. 
+\textit{SQL injection} is a vulnerability that allows an attacker to inject unintended SQL code into queries executed by an application. 
 Any software that constructs SQL queries using external input may be vulnerable to this type of attack.
-
-\begin{itemize}
-    \item \textbf{Severity}: very severe;
-    \item \textbf{Priority}: often high;
-    \item \textbf{Scope}: software that uses SQL;
-    \item \textbf{Technical impact}: unauthorized access to database contents and metadata, data modification or deletion, and potential privilege escalation;
-    \item \textbf{Worst-case scenario}: full system compromise (data exfiltration, administrative takeover, code execution via database features).
-\end{itemize}
-
 \subsection{Underlying idea}
 The application executes an SQL query where some parameters are taken from user input. For example:
 \begin{lstlisting}[language=SQL]
 SELECT * FROM users WHERE userId = <user_id> AND password = <user_password>;
 \end{lstlisting}
-If the application naively substitutes user-supplied values into the query, an attacker can craft input that changes the query semantics.
+If the application naively substitutes user-supplied values into the query, without proper validation or sanitization, an attacker can craft input that changes the query semantics.
 
 \subsection{Example attack}
-Suppose the application builds the query by concatenation. If an attacker supplies:
+Suppose the application builds the query by concatenation of the user input. If an attacker supplies:
 \begin{verbatim}
-user_id:    ' OR '1'='1
-user_password:    ' OR '1'='1
+user_id: ' OR '1'='1
+user_password: ' OR '1'='1
 \end{verbatim}
 the resulting query becomes:
 \begin{lstlisting}[language=SQL]
@@ -30,31 +21,44 @@ SELECT * FROM users
     WHERE userId = '' OR '1'='1'
     AND password = '' OR '1'='1';
 \end{lstlisting}
-Because the boolean expression \texttt{'1'='1'} is always true, the WHERE clause may be satisfied for many rows, allowing the attacker to bypass authentication or access data they shouldn't.
+Because the boolean expression \texttt{'1'='1'} is always true, the WHERE clause is satisfied for all rows, allowing the attacker to bypass authentication or access data they shouldn't.
 
 \subsection{SQL Injection type}
-\paragraph{In-Band SQL injection}
-In this technique, also called \textbf{CLASSICAL}, the attacker uses the same way to hack the database and get the data. The attacker has the possibility to \textbf{modify the original query} and receive the result from the database. This is composed of 3 variants:
+There are two main types of SQL injection techniques:
+\subsubsection{In-Band SQL injection:}
+In this technique, also called CLASSICAL, the attacker uses the same way to hack the database and get the data. The attacker has the possibility to modify the original query and receive the result from the database. This is composed of 3 variants:
 \begin{itemize}
-    \item \textbf{Classic SQL Injection:} basic and traditional version, seen in the previous example;
-    \item \textbf{Error-Based SQL Injection:} the attacker makes the database produce error messages that can help to gather information about the database structure.
-    \item \textbf{Union-Based SQL Injection:} the attacker uses the \texttt{UNION} SQL operator to combine the results of the original query with the results of a malicious query.
+    \item \textbf{Classic SQL Injection}: basic and traditional version, seen in the previous example;
+    \item \textbf{Error-Based SQL Injection}: the attacker makes the database produce error messages that can help to gather information about the database structure.
+    \item \textbf{Union-Based SQL Injection}: the attacker uses the \texttt{UNION} SQL operator to combine the results of the original query with the results of a malicious query.
 \end{itemize}
 
-\paragraph{Inferential SQL Injection}
-This type of injection, also called \textbf{BLIND}, does not show any error message. It's more difficult to exploit, as it returns information 
-only when the application is given SQL payloads that return true or false responses from the server. 
+\subsubsection{Inferential SQL Injection:}
+This type of injection, also called BLIND, does not show any error message. It's more difficult to exploit, as it returns information
+only when the application is given SQL payloads that return true or false responses from the server.
 By observing the responses, an attacker can extract sensitive information.
 
 \begin{itemize}
-    \item \textbf{Boolean Based:} the attacker observes the behavior of the database server and the application, after combining legitimate queries with malicious data, using boolean operators;
-    \item \textbf{Time Based:} the attacker observes the behavior of the database server and the application, after combining legitimate queries with SQL commands that cause time delays.
-    \item \textbf{Out-of-Band:} this technique is used when the attacker is not able to use the same channel to launch the attack and gather information.
+    \item \textbf{Boolean Based}: the attacker observes the behavior of the database server and the application, after combining legitimate queries with malicious data, using boolean operators.
+    For example:
+    \begin{lstlisting}[language=SQL]
+    SELECT * FROM users WHERE userId = '1' AND '1'='2'; -- Expected to return no results as '1'='2' is false
+    SELECT * FROM users WHERE userId = '1' AND '1'='1'; -- Could return results as '1'='1' is true
+    \end{lstlisting}
+    If we see a different behavior between the two queries, we can infer that the userId '1' exists in the database.
+    \item \textbf{Time Based}: the attacker observes the behavior of the database server and the application, after combining legitimate queries with SQL commands that cause time delays.
+    For example, we could use the following payloads:
+    \begin{lstlisting}[language=SQL]
+    SELECT * FROM users WHERE userId = '1' AND sleep(10); -- Introduces a delay of 10 seconds
+    \end{lstlisting}
+    If the application takes longer to respond, we can infer that the userId '1' exists in the database.
+    \item \textbf{Out-of-Band}: this technique is used when the application show the same behavior regardless of the query executed. The attacker uses other channels to retrieve the output of the query, such as HTTP requests. 
 \end{itemize}
-
 \subsection{SQL Injection mitigation}
+To prevent SQL injection attacks, developers should implement the following best practices:
 \begin{itemize}
-    \item \textbf{Escaping} all user supplied input. This means to treat all the data as plain text, rather than executable code or other harmful inputs;
+    \item Escaping all user supplied input. This means to treat all the data as plain text, rather than executable code or other harmful inputs;
     \item Define a list of allowed inputs, to ensure only them are executed;
     \item Use of prepared statements with parametrized queries. Programming languages allow to use  predefined structures to compose SQL queries by accepting only values of specified types.
+    This allow to separate code from data, preventing the execution of malicious SQL code.
 \end{itemize}
