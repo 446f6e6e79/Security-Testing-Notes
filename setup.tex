@@ -1,11 +1,10 @@
-% Pacchetti essenziali
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{comment}
 \usepackage{listings}
 \usepackage{xcolor}
-\usepackage[hidelinks]{hyperref}
+\usepackage[hidelinks]{hyperref} % Hide link boxes
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{algorithm}
@@ -13,7 +12,7 @@
 \usepackage{tcolorbox} 
 \usepackage{fancyhdr} % Aggiunto per intestazioni personalizzate
 
-% Configurazione di codeblocks con il pacchetto listings
+% Configuration for listings codeBlock 
 \lstset{
   basicstyle=\ttfamily\small,
   keywordstyle=\color{blue},
@@ -21,39 +20,37 @@
   stringstyle=\color{red},
   showstringspaces=false,
   breaklines=true,
-  frame=single, % Aggiunge un bordo attorno al codice
-  numbers=left, % Numeri di riga a sinistra
-  numberstyle=\tiny\color{gray}, % Stile dei numeri di riga
-  stepnumber=1, % Numero di righe da saltare tra i numeri
-  numbersep=-5pt, % Distanza tra i numeri di riga e il codice
-  tabsize=2, % Dimensione del tab
-  captionpos=b, % Posizione della didascalia
+  frame=single, 
+  numbers=left, % Place row numbers on the left
+  numberstyle=\tiny\color{gray},  
+  stepnumber=1, 
+  numbersep=-5pt, % Distance from the row numbers and text
+  tabsize=2, % Tab space
+  captionpos=b, % Caption positioning
 }
 
-% Configurazione dell'intestazione
+% Header configuration
 \pagestyle{fancy}
-\fancyhf{} % Pulisce le intestazioni e i piè di pagina
-\fancyhead[L]{\leftmark} % Sezione corrente a sinistra
-\fancyhead[R]{\thepage} % Numero di pagina a destra
-
-% Comandi personalizzati per definizioni
+\fancyhf{} % Clear header and footer
+\fancyhead[L]{\leftmark} % Current section on the left
+\fancyhead[R]{\thepage} % Page number on the right
+ 
 \newcommand{\definition}[2]{%
   \paragraph{#1:} #2%
 }
 
-% Alternativa con enfasi sul termine
 \newcommand{\defterm}[2]{%
   \paragraph{\textbf{#1}:} #2%
 }
 
-% Ambiente per liste di definizioni
+% List of definitions
 \newenvironment{definitions}{%
   \begin{description}[font=\normalfont\bfseries\large, leftmargin=0pt, labelindent=0pt]
 }{%
   \end{description}
 }
 
-% Definizione con box colorato (opzionale)
+% Definition with colored box
 \newtcolorbox{defbox}[1]{
   colback=blue!5!white,
   colframe=blue!75!black,
