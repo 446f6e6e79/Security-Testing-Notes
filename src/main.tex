@@ -1,0 +1,39 @@
+\documentclass{article}
+\input{setup.tex}
+
+\title{Security Testing}
+\author{Davide Donà}
+\date{
+    \MonthName\ \number\year \\[0.5em]
+    \small\textcolor{gray}{\href{https://github.com/446f6e6e79/Security-Testing}{Repository}}
+}
+\begin{document}
+\pagenumbering{Roman}
+
+%Title and table of contents
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+\input{chapters/Introduction.tex}
+\input{chapters/Weaknesses-Vulnerabilities.tex}
+\input{chapters/SQLInjection.tex}
+\input{chapters/XSS.tex}
+\input{chapters/RequestForgery.tex}
+\input{chapters/CommandInjection.tex}
+\input{chapters/FileAccess.tex}
+\input{chapters/errorHandling.tex}
+\input{chapters/IDOR.tex}
+\input{chapters/ClientSideVulnerabilities.tex}
+\input{chapters/Overflow.tex}
+\input{chapters/SupplyChainAttack.tex}
+\input{chapters/softwareTesting.tex}
+\input{chapters/StaticAnalysis.tex}
+\input{chapters/TaintAnalysis.tex}
+\input{chapters/DynamicAnalysis.tex}
+\input{chapters/BlackBoxFuzzing.tex}
+\input{chapters/WhiteBoxFuzzing.tex}
+\input{chapters/AIForDetection.tex}
+\end{document}

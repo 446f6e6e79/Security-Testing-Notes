@@ -1,18 +1,27 @@
+% Essential LaTeX packages and custom commands for documentation
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{comment}
 \usepackage{listings}
 \usepackage{xcolor}
-\usepackage[hidelinks]{hyperref} % Hide link boxes
+\usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{tcolorbox} 
-\usepackage{fancyhdr} % Aggiunto per intestazioni personalizzate
+\usepackage{fancyhdr} 
+\usepackage{multirow}
+\usepackage{array}
+\usepackage[sort&compress,numbers]{natbib}
+\usepackage{tabularx}
+% Command to get the current month name
+\newcommand{\MonthName}{%
+  \ifcase\month\or January\or February\or March\or April\or May\or June\or July\or August\or September\or October\or November\or December\fi}
 
-% Configuration for listings codeBlock 
+% Configuration of code blocks with the listings package
 \lstset{
   basicstyle=\ttfamily\small,
   keywordstyle=\color{blue},
@@ -21,19 +30,22 @@
   showstringspaces=false,
   breaklines=true,
   frame=single, 
-  numbers=left, % Place row numbers on the left
-  numberstyle=\tiny\color{gray},  
+  numbers=left, 
+  numberstyle=\tiny\color{gray}, 
   stepnumber=1, 
-  numbersep=-5pt, % Distance from the row numbers and text
-  tabsize=2, % Tab space
-  captionpos=b, % Caption positioning
+  numbersep=-5pt, 
+  tabsize=2, 
+  captionpos=b, 
 }
 
-% Header configuration
+% Configuration of the header and footer with fancyhdr
 \pagestyle{fancy}
-\fancyhf{} % Clear header and footer
-\fancyhead[L]{\leftmark} % Current section on the left
-\fancyhead[R]{\thepage} % Page number on the right
+\fancyhf{} 
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage} 
+
+% No indentation for paragraphs
+\setlength{\parindent}{0pt}
  
 \newcommand{\definition}[2]{%
   \paragraph{#1:} #2%
