@@ -1,19 +1,31 @@
 \section{Command Injection}
-\textbf{Command Injection} is an attack in which an attacker's goal is the \textbf{arbitrary execution of commands} on the \textbf{host operating system}.
+\textit{Command Injection} is an attack in which an attacker's goal is the arbitrary execution of commands on the host operating system.
+It is a type of injection attack, in which no direct code injection occurs, but rather the injected data is used to compose commands that are executed by the system.
 
-\paragraph{Problem:} Untrusted external data is directly passed to a command interpreter. If the data is crafted to include commands, those commands may be executed and the interpreter may be forced to perform actions beyond its intended function.
+\paragraph{Example:} An application takes a parameter as input from a user and uses it to construct a command:
+\begin{lstlisting}[language=bash, caption={Vulnerable code example}]
+<?php
+    //http://yourdomain.com?par=value
+    $command = "ls " . $_GET['par'];
+    $output = exec($command);
+?>
+\end{lstlisting}
+An attacker could exploit this by providing a value such as `; rm -rf /`, resulting in the execution of both the `ls` command and the `rm -rf /` command, which would delete all files on the server.
+
+\paragraph{Problem:} Untrusted external data is directly passed to a command interpreter. 
+If the data is crafted to include commands, those commands may be executed and the interpreter may be forced to perform actions beyond its intended function.
 
 \paragraph{Underlying conditions:} For command injection to succeed, the application typically meets three main conditions:
 \begin{itemize}
-    \item the application has the \textbf{privileges/permissions} to execute system commands;
-    \item the application uses \textbf{user-provided data} as part of a system command;
-    \item the user-provided data is not properly \textbf{escaped} or \textbf{sanitized} before use.
+    \item the application has the privileges/permissions to execute system commands;
+    \item the application uses user-provided data as part of a system command;
+    \item the user-provided data is not properly escaped or sanitized before use.
 \end{itemize}
 
 \paragraph{Mitigation:}
 \begin{itemize}
     \item Avoid invoking shell/OS execution functions when possible;
-    \item Treat all external input as untrusted: validate, normalize, and apply \textbf{whitelisting} where feasible;
-    \item Use \textbf{parameterized APIs} or pass user input as separate arguments rather than concatenating it into command strings.
-    \item Run the application with the \textbf{least privileges} necessary to reduce the impact of a successful attack.
+    \item Treat all external input as untrusted: validate, normalize, and apply whitelisting where feasible;
+    \item Use parameterized APIs or pass user input as separate arguments rather than concatenating it into command strings.
+    \item Run the application with the least privileges necessary to reduce the impact of a successful attack.
 \end{itemize}
