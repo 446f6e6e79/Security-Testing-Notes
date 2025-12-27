@@ -1,12 +1,12 @@
 \section{Taint Analysis}
-Taint analysis is one possible solution of the data-flow analysis problem. It aims to track the flow of sensitive information through a program and identify potential security vulnerabilities.
+Taint analysis is one possible solution of the data-flow analysis problem. 
+It aims to track the flow of sensitive information through a program and identify potential security vulnerabilities.
 \\To understand how taint analysis works, we need to define some concepts:
-
-\begin{definitions}
-  \item[Tainted Variable:] a variable is considered \textbf{tainted} if it contains data from an untrusted source (for example, user input), and has not yet been sanitized or validated. When it gets checked, it becomes untainted;
-  \item[Untainted Variable:] a variable is considered \textbf{untainted} if it contains data that has been properly sanitized or validated;
-\end{definitions}
-Variables containing unsanitized user input (tainted variables) should never be used in security-critical statements (such as system calls, database queries, file operations).
+\begin{itemize}
+    \item \textbf{Tainted Variable}: a variable is considered tainted if it contains data from an untrusted source (for example, user input), and has not yet been sanitized or validated. 
+    \item \textbf{Untainted Variable}: a variable is considered untainted if it contains data that has been properly sanitized or validated;
+\end{itemize}
+Tainted variables should never be used in security-critical statements (such as system calls, database queries, file operations).
 \\Taint analysis aims at keeping track of tainted variables, along the execution path of of the program.
 \begin{itemize}
     \item \textbf{Static taint analysis:} analyzes the program's source code without executing it, to identify potential taint flows and vulnerabilities. It's conducted on the Control Flow Graph (CFG) of the program;

@@ -1,42 +1,135 @@
-\section{Flow analysis}
-Several models can be used to describe an application and represent its code.  
-Different models may emphasize different aspects of program behavior — such as \textbf{control flow} or \textbf{data dependence}. 
-\\\textbf{Flow analysis} focuses on understanding how information moves through the program.  
-By analyzing both control and data dependencies, it helps identify relationships among variables, track how data values are produced and consumed, and evaluate the effects of data changes across the codebase.  
-\\\\Program analysis and test design techniques often leverage data flow information to enhance their effectiveness.  
+\section{Static Analysis}
+We will now focus on static analysis techniques. We can identify three main categories:
+\begin{itemize}
+    \item \textbf{Model Checking}: it consists of an automatic technique for verifying finite-state concurrent systems;
+    \item \textbf{Pattern-based analysis}: it consists of searching for known patterns in the code that may indicate potential vulnerabilities;
+    \item \textbf{Flow-based analysis}: it focuses on the order in which individual statements, instructions, or function calls are executed or evaluated.
+\end{itemize}
+In the following sections, we will analyze these techniques in detail.
 
-\subsection{Control-flow graph}
-A \textbf{Control-Flow Graph (CFG)} is defined as follows:
+\subsection{Model Checking}
+Model checking is an automated static analysis technique that, given a finite-state model of a system and a formal property, 
+systematically checks whether this property holds for the given model.
+It is based on Linear Temporal Logic (LTL).
+\subsubsection{Linear Temporal Logic (LTL)}
+LTL is used to determine patterns on infinite sequences of states. It is built on three elements:
+\begin{itemize}
+    \item \textbf{Propositional variables}: atomic statements that can be true or false in a given state;
+    \item \textbf{Logical operators}: standard logical connectives such as AND ($\land$), OR ($\lor$), NOT ($\neg$), IMPLIES ($\rightarrow$);
+    \item \textbf{Temporal operators}: operators that express temporal relationships between states, such as:
+    \begin{itemize}
+        \item $p$: $p$ holds in the current state;
+        \item $X p$: $p$ holds in the next state;
+        \item $F p$: $p$ holds at some point in the future;
+        \item $G p$: $p$ holds globally (always holds in the future);
+        \item $p U q$: $p$ holds until $q$ holds.
+    \end{itemize}
+\end{itemize}
+\subsubsection{Model checking process}
+The model checker explores all possible states of the system to verify if some property holds. For example:
+\begin{itemize}
+    \item Let M be a model of a system (e.g., a finite state-transition graph);
+    \item Let $f$ be a property expressed in LTL;
+    \item The model checker verifies whether $M(f) = True$ (i.e., if the model M satisfies the property f).
+\end{itemize}
+For example, consider a simple model $G$ of a microwave oven, represented as a state-transition graph:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../../images/microwave_model.png}
+    \caption{Microwave oven model}
+\end{figure}
+We can express properties in LTL, such as:
+\begin{enumerate}
+    \item $G (\text{Heat} \implies \text{Close})$;
+    \item $G (\text{Start} \implies \neg \text{Heat})$;
+    \item $G ((\text{Start} \land \neg \text{Error}) \implies \neg \text{Heat})$;
+\end{enumerate}
+Given the model $G$, an initial state and a property, the model will check if the property holds in all possible executions of the model.
+We have that a property is violated if:
+\begin{itemize}
+    \item There exists a state in which the property does not hold;
+    \item There exists a path in the model that leads to a state where the property does not hold;
+    \item There exists a cycle in the model that leads to a state where the property does not hold.
+\end{itemize}
+
+\subsection{Pattern-based analysis}
+Pattern-based analysis involves searching for known patterns in the code that may indicate potential vulnerabilities.
+These patterns can be derived from known security issues, coding standards, or best practices.
+Often, \textit{static analysis tools} are used to automate this process, scanning the source code for these patterns and flagging potential issues for further review.
+
+\subsection{Flow-based static analysis}
+Flow-based static analysis reasons about the logical execution of a program in order to track:
+\begin{itemize}
+    \item How data values propagate through the program (data flow analysis);
+    \item How control structures affect the execution of the program (control flow analysis).
+\end{itemize}
+To do this, the program is modeled using graphs that represent the flow of data and control within the program.
+\subsection{Model for Flow Analysis}
+All the defined models are based on the \textbf{Control-Flow Graph} (CFG).
+\subsubsection{Control-Flow Graph}
+A \textit{Control-Flow Graph} (CFG) is a special type of directed graph that represents all paths that might be executed by a program.
+It is formally defined as a 4-tuple:
 \[
 CFG = (N, E, n_e, n_x)
 \]
+where:
 \begin{itemize}
-    \item $N$: \textbf{set of nodes}, one for each \textbf{statement} (instruction) of the program;
-    \item $E \subseteq N \times N$: \textbf{set of edges}, where $(n, m) \in E$ if statement $m$ can be executed immediately after $n$;
-    \item $n_e$: \textbf{entry node} of the program;
-    \item $n_x$: \textbf{exit node} of the program.
+    \item $N$: set of nodes, one for each \textit{statement} (instruction) of the program;
+    \item $E \subseteq N \times N$: set of edges, where $(n, m) \in E$ if statement $m$ can be executed immediately after $n$;
+    \item $n_e$: entry node of the program;
+    \item $n_x$: exit node of the program.
 \end{itemize}
+For example, consider the following simple program and its corresponding CFG:
 
+% First minipage with code
+\begin{minipage}[c]{0.45\textwidth}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+        if(a>b){
+            c=3;
+        } else if (a<b){
+            c=4;
+        } else {
+            c=5;
+        }
+        c=c*2;
+    \end{lstlisting}
+\end{minipage}
+\hfill
+% Second minipage with CFG image
+\begin{minipage}[c]{0.45\textwidth}
+    \centering
+    \includegraphics[width=0.7\textwidth]{../../images/cfg_example.png}
+    \captionof{figure}{Control-Flow Graph}
+    \label{fig:cfg_example}
+\end{minipage}
+We can then define some important concepts related to CFGs:
 \paragraph{Path:} represents a possible program execution. It is composed of a sequence of nodes and edges starting from the entry node and ending at a terminal node.
-
 \paragraph{Linearly independent path:} a path is \textbf{linearly independent} if it introduces at least one new edge that has not been traversed by any previously defined path.  
 These paths are used to identify distinct behaviors implemented in a program. Typically, a test case should be defined to verify each independent path.
+
 \subsubsection{Def-Use pairs}
-A \textbf{def-use pair} associates a point in a program code where a value is defined with a point where it's used.
-\paragraph{Definition:} where a variable gets a value:
+Another important concept in flow analysis is the \textit{Def-Use pair}.
+It associates a point in a program code where a value is defined with a point where it's used.
 \begin{itemize}
-    \item Declaration;
-    \item Initialization;
-    \item Assignment;
-    \item Values received by a parameter.
+    \item \textbf{Definition}: where a variable gets a value. It can be:
+    \begin{itemize}
+        \item Declaration;
+        \item Initialization;
+        \item Assignment;
+        \item Values received by a parameter.
+        \end{itemize}
+    \item \textbf{Use}: extraction of a value from a variable. It can be:
+    \begin{itemize}
+        \item Expressions;
+        \item Conditional statements;
+        \item Parameter passing;
+        \item returns.
+    \end{itemize}
 \end{itemize}
-\paragraph{Use:} extraction of a value from a variable:
-\begin{itemize}
-    \item Expressions;
-    \item Conditional statements;
-    \item Parameter passing;
-    \item returns.
-\end{itemize}
+Given a CFG of the program, we can give the following definitions:
+\paragraph{Def-use pair:} a pair $(d,u)$ where $d$ is a node where a variable \verb|v| is defined,
+and $u$ is a node where the same variable \verb|v| is used, and there exists
+at least one \textit{definition-clear path} from $d$ to $u$ in the CFG.
 \paragraph{Def-clear path:} a path along the CFG from a definition to a use of the same variable, without another definition of the variable in between.
 
 \subsubsection{Data Dependence Graph}
@@ -45,17 +138,47 @@ A direct data dependence graph is defined using the two definitions  we just gav
     \item Its nodes are the same as in the CFG;
     \item Its edges are the def-use pairs.
 \end{itemize}
-This graph can be used to identify \textbf{data dependence}, where values are from.
+The data dependence graph is derived from the CFG and makes explicit how values propagate between statements.
+It is useful for understanding \textit{data dependence}: which statements depend on the values produced by other statements.
+For example, consider the following Java method that computes the greatest common divisor (GCD) of two integers using the Euclidean algorithm:
+\label{code:gcd_example}
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small]
+public int GCD(int x, int y) {
+    int tmp;                // A: Def of x, y, tmp
+    while (y != 0) {        // B: Use of y
+        tmp = x % y;        // C: Use of y, Def of tmp
+        x = y;              // D: Use of y, Def of x
+        y = tmp;            // E: Use of tmp, Def of y
+    }
+    return x;               // F: Use of x
+}
+\end{lstlisting}
+We can build the following DDG:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{../../images/DDG.png}
+    \caption{Data Dependence Graph for GCD method}
+    \label{fig:ddg_example}
+\end{figure}
+
 \subsubsection{Control Dependence Graph}
-Also a \textbf{control dependence graph} can be defined as follows:
+Also a \textit{control dependence graph} can be defined as follows:
 \begin{itemize}
     \item Its nodes are the same as the same as in the CFG;
     \item Its edges are unlabeled, direct control dependencies.
 \end{itemize}
-This type of graph shows \textbf{control dependence}: which \textbf{statement controls} whether a statement is executed or not. 
+This type of graph shows \textit{control dependence}: which statement controls whether a statement is executed or not.
+Given the code example of the GCD method \ref{code:gcd_example}, we can build the following CDG:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{../../images/CDG.png}
+    \caption{Control Dependence Graph for GCD method}
+    \label{fig:cdg_example}
+\end{figure}
+
 \subsection{Data-Flow analysis}
 \subsubsection{Reaching definition}
-There is an association $(d,u)$ between a \textbf{definition of a variable} \verb|v| at code statement $d$ and a \textbf{use of variable} \verb|v| at code statement $u$ iff:
+There is an association $(d,u)$ between a definition of a variable \verb|v| at code statement $d$ and a \textbf{use of variable} \verb|v| at code statement $u$ iff:
 \begin{itemize}
     \item there is at least one control flow path from $d$ to $u$;
     \item there is no intervening definition of \verb|v|.
@@ -65,17 +188,17 @@ In this case, we say that $v_d$ \textbf{reaches} $v_u$.
 \paragraph{Normal graph exploration}
 Even if we consider a loop-free path, the number of paths can be exponentially larger than the number of nodes and edges. Practical algorithms therefore do not search every individual path. Instead, they summarize the reaching definitions at a node over all the paths reaching that node.
 
-\paragraph{DF Algorithm:} an efficient algorithm for \textbf{computing reaching definitions}, and other properties, is based on the way \textbf{reaching definitions} at one node are related to the one of its adjacent nodes.
+\subsubsection{DF Algorithm:} an efficient algorithm for \textbf{computing reaching definitions}, and other properties, is based on the way \textbf{reaching definitions} at one node are related to the one of its adjacent nodes.
 \\\\Suppose we are calculating the \textbf{reaching definitions} of node $n$, and there is an edge $(p,n)$ from an immediate predecessor, node $p$:
 \begin{itemize}
-    \item if the predecessor node $p$, assigns a value to a variable \verb|v|, then the definition $v_p$ \textbf{reaches} $n$;
+    \item if the predecessor node $p$, assigns a new value to a variable \verb|v|, then the definition $v_p$ \textbf{reaches} $n$;
     \item If a definition $v_p$ of a variable \verb|v| reaches a predecessor node $p$, then the definition is propagated on from p to n. 
 \end{itemize}
 \paragraph{Formal definition:} we can formally define the idea expressed by the algorithm we just cited. At each node $n$, we have:
 \begin{itemize}
-    \item \textbf{Reaching definitions} $(In(n))$: definitions flowing out of th predecessor nodes $m$. Can be defined as
+    \item \textbf{Reaching definitions} - $In(n)$: definitions flowing out of th predecessor nodes $m$. Can be defined as
     \[\bigcup_{m\in pred(n)} Out(m)\]
-    \item \textbf{Out flow} $Out(n)$: the output of a node n can formally be defined as:
+    \item \textbf{Out flow} - $Out(n)$: the output of a node n can formally be defined as:
     \[Out(n) = In(n) \setminus Kill(n) \cup Gen(n) \]
     Where:
     \begin{itemize}
@@ -83,6 +206,13 @@ Even if we consider a loop-free path, the number of paths can be exponentially l
         \item $Kill(n) = \{v_x| v \text{ is defined or modified at x AND } v \text{ is modified at} n\}$
     \end{itemize}
 \end{itemize}
+Given these definitions, data flow analysis can be performed following these steps:
+\begin{enumerate}
+    \item Build a CFG for the program;
+    \item Define the set of equations between $In(n)$ and $Out(n)$ for each node $n$ in the CFG;
+    \item Solve the equations by finding a solution.
+\end{enumerate}
+
 \subsubsection{Meet over path}
 Another solution for data-flow analysis is the \textbf{Meet Over Path} (MOP).
 \\At a node $n$, the MOP is defined as:
@@ -97,3 +227,26 @@ where:
 \paragraph{Exact solution:} the exact solution requires, instead of considering all path from the entry node, to the node n, to just consider the \textbf{feasible paths}.
 \[EX[n] = \bigwedge_{p\in feas(P_{n})} f_p(T)\]
 This is an \textbf{undecidable} problem.
+
+\subsubsection{Approximations in static analysis}
+Static analysis often relies on approximations of the program's reachable states and behaviors to make the analysis tractable.
+\begin{itemize}
+    \item Sound approximation: every property that holds in the approximation also holds in the actual program. It may produce false positives but guarantees no false negatives;
+    \item Complete approximation: every property that holds in the approximation also holds in the actual program. Also referred as under-approximation, it may produce false negatives but guarantees no false positives;
+    \item Conservative approximation: the approximation is sound and complete.
+\end{itemize}
+
+\subsubsection{Pros and cons of static analysis}
+\begin{itemize}
+    \item Pros:
+    \begin{itemize}
+        \item Scales really good for large codebases;
+        \item Can establish the absence of certain types of vulnerabilities;
+        \item Can produce an explanation of why properties hold or not.
+    \end{itemize}
+    \item Cons:
+    \begin{itemize}
+        \item It's not always easy to scale the problem of approximating program behaviors;
+        \item Non trivial semantic properties are undecidable (Rice's theorem);
+    \end{itemize}
+\end{itemize}
