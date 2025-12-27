@@ -1,5 +1,5 @@
 \section{Overflow}
-
+To understand overflow vulnerabilities, it is important to have a basic understanding of how memory is organized in a running process.
 \subsection{Introduction}
 \label{introduction-to-overflow}
 The memory of a process is divided into several distinct areas, each serving a specific purpose for data storage and program execution. It can be generally divided as follows:
@@ -12,45 +12,59 @@ The memory of a process is divided into several distinct areas, each serving a s
 \end{itemize}
 
 \subsection{Buffer Overflow}
-A \textbf{buffer overflow} occurs when a program attempts to write more data into a fixed-length memory buffer than it can hold.
+A buffer overflow occurs when a program attempts to write more data into a fixed-length memory buffer than it can hold.
 \\Since user data and control flow information are mixed together in the memory, the user data exceeding a buffer may corrupt other data and control flow information.
 
 \paragraph{Spotting buffer overflow:} The following conditions frequently lead to buffer overflow vulnerabilities:
 \begin{itemize}
     \item input originates from untrusted sources (network, files, or command line);
-    \item the input is copied or transferred into internal structures such as fixed-size buffers;
-    \item data or strings are manipulated using \textbf{unsafe functions} that do not perform bounds checking (for example: \texttt{strcpy}, \texttt{strcat}, \texttt{gets}).
+    \item the input is copied or transferred into internal structures with a fixed size;
+    \item data or strings are manipulated using unsafe functions that do not perform bounds checking (for example: \texttt{strcpy}, \texttt{strcat}, \texttt{gets}).
 \end{itemize}
 Vulnerabilities of this kind can be detected using dynamic testing techniques such as fuzzing.
 
 \paragraph{Fixing buffer overflow:}
-When working with strings, always use safe versions of the needed functions, that take into account the count of characters to work on. Always check loop termination and array boundaries.
+When working with strings, always use safe versions of the needed functions, that take into account the count of characters to work on. 
+Always check loop termination and array boundaries.
 
 \subsection{String format vulnerabilities}
-A \textbf{non-verified string} used as a format string may allow an attacker
-to inject format specifiers (for example \texttt{\%s}, \texttt{\%x}) that read values
-from the stack. This becomes possible when a formatting function accepts a
-variable number of arguments (ellipsis), e.g.
+A non-validated string may be used as a \textit{format string} in certain functions (e.g., \texttt{printf} in C/C++).
+If an attacker can insert format specifiers (like \texttt{\%x}, \texttt{\%s}, \texttt{\%n}) into the string, they can read or write arbitrary memory locations.
+This is possible if the formatting option has an undeclared number of arguments, such as in the function:
 \begin{verbatim}
     int printf(const char *format, ...);
 \end{verbatim}
 Passing untrusted input directly as the \texttt{format} parameter is unsafe because
 the attacker can control how the function interprets stack contents.
+\paragraph{Example:}
+Consider the following C code snippet:
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+int main() {
+    char user_input[100];
+    printf("Enter a string: ");
+    gets(user_input);
+    printf(user_input); // Vulnerable to format string attack
+    return 0;
+}
+\end{lstlisting}
+If an attacker inputs the string \verb|"%x %x %x %x"|, the program will print out four values from the stack, potentially revealing sensitive information.
 
-\paragraph{Fixing string formats:} always sanitize user input before using it as a format string. Use constant strings whenever possible and avoid the use of unsafe functions, such as 
-\begin{verb} 
-printf();
-\end{verb}
+\paragraph{Fixing string formats:} 
+always sanitize user input before using it as a format string. 
+Use constant strings whenever possible and avoid the use of unsafe functions, such as \texttt{printf()}.
+
 \subsection{Integer overflow}
-\paragraph{2's complement notation:}
-Integers are usually represented using the \textbf{two's complement} notation.  
+To understand integer overflow, it is important to know how integers are represented in computer memory.
+\paragraph{Integer Representation - 2's complement notation:}
+To allow positive and negative values, integers are usually represented using the \textit{two's complement notation}.
+It is a binary representation where the \textit{Most Significant Bit} (MSB) indicates the sign of the integer (0 for positive, 1 for negative).
 Given a sequence of $n$ bits, the representable range of values is:
 \[
-[-2^{n-1}, 2^{n-1}-1]
+[-2^{n-1}, +2^{n-1}-1]
 \]
-This means that, when working with signed integers, exceeding the upper or lower
-limit of this range causes the value to \textbf{wrap around} to the opposite side
-of the range.
+When working with signed integers using this representation, exceeding the upper or lower limit of this range causes the MSB value to change. 
+This results in the value wrapping around to the opposite side of the range.
 
 \paragraph{Example:}
 For an 8-bit signed integer:
@@ -59,9 +73,10 @@ For an 8-bit signed integer:
 \]
 Adding $1$ to $127$ results in $-128$:
 \[
-127 + 1 = -128
+127 + 1 =
+01111111 + 00000001 = 10000000 = -128
 \]
-Similarly, subtracting $1$ from $-128$ results in $127$.
+Similarly, subtracting $1$ from $-128$ results in $127$:
 
 \paragraph{Causes and risks:}
 Integer overflow occurs when an arithmetic operation produces a value outside
@@ -74,13 +89,13 @@ In C and C-like languages, this can happen due to:
 
 \paragraph{Fix integer overflow:}
 \begin{itemize}
-    \item Use sufficiently large integer types (\textbf{short} = 16 bits, \textbf{int} = 32 bits, \textbf{long} = 64 bits);
+    \item Use sufficiently large integer types (\textit{short} = 16 bits, \textit{int} = 32 bits, \textit{long} = 64 bits);
     \item Explicitly check arithmetic operations that may exceed type limits, by comparing with data type limit;
 \end{itemize}
 
 \subsection{Heap overflow}
 As described in Chapter \ref{introduction-to-overflow}, the heap is a dynamic
-memory area managed at runtime. Incorrect use can cause \textbf{heap overflows},
+memory area managed at runtime. Incorrect use can cause heap overflows,
 which may crash the application or corrupt heap metadata. This can happen when:
 \begin{itemize}
     \item allocating excessively large buffers without validating sizes;
@@ -89,7 +104,7 @@ which may crash the application or corrupt heap metadata. This can happen when:
 \end{itemize}
 
 \subsection{Final remarks and barriers}
-\paragraph{Base attack pattern:} usually \textbf{overflow-based} attacks follow these steps:
+\paragraph{Base attack pattern:} usually overflow-based attacks follow these steps:
 \begin{enumerate}
     \item \textbf{Inject attack code} into the buffer. Code that is already in the program can be used or otherwise, code can be injected;
     \item \textbf{Redirect control flow} to the injected code. This way the execution jumps to the malicious code;

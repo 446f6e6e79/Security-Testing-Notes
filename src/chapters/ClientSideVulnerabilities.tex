@@ -1,7 +1,11 @@
 \section{Client-side vulnerabilities}
-\subsection{Validation}
-\textbf{Client-side validation bypass} refers to techniques used to circumvent validation checks performed on the \textbf{client side}.  
-When the server relies solely on protection mechanisms implemented in the client, an attacker can modify the client’s behavior to bypass these mechanisms, leading to unexpected or unauthorized interactions between the client and the server.
+Client-side vulnerabilities are security weaknesses that exist within the client-side components of a web application. 
+Since these components are often exposed to users, they can be manipulated or bypassed by attackers.
+
+\subsection{Validation Bypass}
+\textit{Client-side validation bypass} refers to techniques used to get around validation checks performed on the client side.  
+When the server relies solely on protection mechanisms implemented in the client, an attacker can modify the client’s behavior to bypass these mechanisms,
+leading to unexpected or unauthorized interactions between the client and the server.
 
 \paragraph{How:}
 \begin{itemize}
@@ -11,20 +15,23 @@ When the server relies solely on protection mechanisms implemented in the client
 \end{itemize}
 
 \paragraph{Mitigation:}
-All validation performed on the front-end must also be enforced on the backend.  
+All validation performed on the front-end must also be enforced on the back-end.  
 Client-side checks are still useful to improve user experience and reduce server load, but they should never be considered a security mechanism.
 
 \subsection{Data Filtering}
 The problem arises when an application sends all the data to the client and performs filtering only on the client side.  
 This approach allows users to access information that should remain hidden, creating a potential access control vulnerability.
-\\\\It is a good practice to send the client only the data they are authorized to access. Exposing excessive or unnecessary information can lead to serious security risks and data leakage.
+\\\\It is a good practice to send the client only the data they are authorized to access. Exposing excessive or unnecessary information 
+can lead to serious security risks and data leakage.
 
 \subsection{HTML tampering and Injection}
 HTML injection is a type of injection vulnerability that occurs when an attacker can control an input point and inject arbitrary HTML (or script) into a page.  
-The targeted browser cannot reliably distinguish between legitimate and malicious parts of the page, which can lead to content manipulation, UI spoofing, or cross-site scripting (XSS).
+The targeted browser cannot reliably distinguish between legitimate and malicious parts of the page, 
+which can lead to content manipulation, UI spoofing, or cross-site scripting (XSS).
 
 \paragraph{Problem:}
-Untrusted input is directly embedded in HTML output (for example via \texttt{document.write} or unsanitized template insertion). If the input contains markup or script, the browser will render and execute it in the context of the vulnerable page.
+Untrusted input is directly embedded in HTML output (for example via \texttt{document.write}). 
+If the input contains markup or script, the browser will render and execute it in the context of the vulnerable page.
 
 \paragraph{Unsafe example:}
 \begin{verbatim}
@@ -38,7 +45,7 @@ http://vulnerable.site/page.html?user<img%20src='aaa'%20onerror=alert(1)>
 \end{verbatim}
 \paragraph{Use:}
 \begin{itemize}
-  \item \textbf{Defacing} — modify visible page content to mislead or damage reputation.
-  \item \textbf{Exfiltrating anti-CSRF tokens} — force the browser to render attacker-supplied markup that exposes hidden tokens.
-  \item \textbf{Exfiltrating stored credentials} — inject forms that may be auto-filled by password managers and thus stolen.
+  \item Defacing — modify visible page content to mislead or damage reputation.
+  \item Exfiltrating anti-CSRF tokens — force the browser to render attacker-supplied markup that exposes hidden tokens.
+  \item Exfiltrating stored credentials — inject forms that may be auto-filled by password managers and thus stolen.
 \end{itemize}

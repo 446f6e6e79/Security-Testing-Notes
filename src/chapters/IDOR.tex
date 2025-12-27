@@ -1,6 +1,17 @@
 \section{Insecure Direct Object Reference (IDOR)}
-Insecure Direct Object Reference (IDOR) is a type of \textbf{access control vulnerability} that occurs when an application uses user-supplied input to access internal objects directly, without proper authorization checks.  
-This happens when a developer exposes a reference to internal implementation objects — such as files, database records, or keys — without adequate validation, allowing attackers to manipulate those references and gain unauthorized access to data or functionality.
+\textit{Insecure Direct Object Reference} (IDOR) is a type of \textit{access control} vulnerability that occurs when 
+an application uses user-supplied input to access internal objects directly, without proper authorization checks.  
+This happens when a developer exposes a reference to internal implementation objects — such as files, database records, 
+or keys — without adequate validation, allowing attackers to manipulate those references and gain unauthorized access 
+to data or functionality.
+
+\paragraph{Example:}
+Consider a web application that allows users to view their profile information by accessing a URL like:
+\begin{verbatim}
+https://example.com/user/profile?user_id=123
+\end{verbatim}
+If authorization checks are not implemented, an attacker could change the \texttt{user\_id} parameter to another user's ID (e.g., \texttt{user\_id=124}) 
+and gain access to that user's profile information.
 
 \paragraph{How:}
 \begin{itemize}

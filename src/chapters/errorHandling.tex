@@ -1,9 +1,18 @@
 \section{Error Handling}
-Error handling is a mechanism used to detect and manage errors that occur during the execution of a program. It allows the application to recover gracefully from unexpected conditions and avoid crashes. Proper error handling is an essential part of an application's overall security.
+Error handling is a mechanism used to manage errors that occur during the execution of a program. 
+It allows the application to recover from unexpected conditions and avoid crashes. 
+Proper error handling is an essential part of an application's overall security.
+\\\\Most of the attacks always begin with reconnaissance activities, where the attacker tries to gather
+as much technical information as possible about the target system.
 
 \paragraph{Problem:}
 Improper error handling occurs when software fails to correctly handle certain error conditions, leaving the program in an insecure or unstable state.  
-This can lead to program crashes (potentially causing a \textbf{Denial of Service}) or unintentional disclosure of sensitive information such as stack traces, file paths, or internal logic — all of which may help an attacker gather useful insights about the system.
+This can lead to:
+\begin{itemize}
+    \item \textbf{Program crashes:} unhandled exceptions or errors can cause the program to terminate unexpectedly, leading to a denial of service;
+    \item \textbf{Information leakage:} detailed error messages such as stack traces may reveal sensitive information about the application's internal workings.
+\end{itemize}
+Improper error handling and unhandled exceptions can be exploited by attackers to collect useful information.
 
 \paragraph{Mitigation:}
 \begin{itemize}
