@@ -6,38 +6,42 @@ It aims to track the flow of sensitive information through a program and identif
     \item \textbf{Tainted Variable}: a variable is considered tainted if it contains data from an untrusted source (for example, user input), and has not yet been sanitized or validated. 
     \item \textbf{Untainted Variable}: a variable is considered untainted if it contains data that has been properly sanitized or validated;
 \end{itemize}
-Tainted variables should never be used in security-critical statements (such as system calls, database queries, file operations).
-\\Taint analysis aims at keeping track of tainted variables, along the execution path of of the program.
+It's important to ensure that tainted variables should never be used in security-critical statements (such as system calls, database queries, file operations).
+There are two main types of taint analysis:
 \begin{itemize}
     \item \textbf{Static taint analysis:} analyzes the program's source code without executing it, to identify potential taint flows and vulnerabilities. It's conducted on the Control Flow Graph (CFG) of the program;
     \item \textbf{Dynamic taint analysis:} tracks the flow of tainted variables during program execution, allowing for more precise detection of vulnerabilities in real-time.
 \end{itemize}
 
 \subsection{Static taint analysis}
-\begin{definitions}
-    \item[Source:] a source is the point of the program where a tainted variable is defined. This could be user input, data read from a file, or any other untrusted data.
-    \item[Sink:] a sink is the point of the program where a tainted variable is used in a potentially dangerous way, such as being passed to a system call or used in a database query. The possible sinks can differ based on the application context and on the vulnerability we want to detect;
-    \item[Taint propagation rules:] specify the taint status for data derived from tainted/untainted operand;
-    \item[Sanitization:] the operation conducted on a tainted variable to check / sanitize it.
-\end{definitions}
+Before diving into the implementation of static taint analysis, we need to define some key concepts:
+\begin{itemize}
+    \item \textbf{Source}: a source is the point of the program where a tainted variable is defined. This could be user input, data read from a file, or any other untrusted data.
+    \item \textbf{Sink}: a sink is the point of the program where a tainted variable is used in a potentially dangerous way, such as being passed to a system call or used in a database query. The possible sinks can differ based on the application context and on the vulnerability we want to detect.
+    \item \textbf{Taint propagation rules}: specify the taint status for data derived from tainted/untainted operand.
+    \item \textbf{Sanitization}: the operation conducted on a tainted variable to check / sanitize it.
+\end{itemize}
 The goal of static taint analysis is, for all possible inputs, to prove that the tainted data will never be used where untainted data is expected.
 The solution requires to analize all the possible data flow of the program. This is done following these steps:
 \begin{enumerate}
-    \item Identify possible \textbf{sources} in the program;
-    \item Identify possible \textbf{sinks} in the program;
+    \item Identify all possible \textbf{sources} in the program;
+    \item Identify all possible \textbf{sinks} in the program;
     \item Identify and analyze all possible data flows in which sources can reach sinks;
-    \item Identify wheter a tainted sources flows into a security-critical sink. 
+    \item Identify whether a tainted source flows into a security-critical sink.
 \end{enumerate}
+Since we want to analyze all possible data flows, static taint analysis is usually implemented using data flow analysis techniques.
 \subsubsection{How to implement taint analysis}
 Static Taint Analysis can be implemented by customizing the data flow analysis framework.
-\begin{definitions}
-    \item[Taint status:] the taint status of a variable can be either \textbf{true} (tainted) or \textbf{false} (untainted). It is expressed as:
+\begin{itemize}
+    \item \textbf{Taint status:} the taint status of a variable can be either \textbf{true} (tainted) or \textbf{false} (untainted). It is expressed as:
     $x \rightarrow \{T, F\}$;
-    \item[Flow information:] the flow information propagated for taint analysis consists of taint sets. Formally:
+    \item \textbf{Flow information:} the flow information propagated for taint analysis consists of taint sets. Formally:
     $ V = \mathcal{P}(X)$;
-    where $X$ is the set of all variables in the program, and $\mathcal{P}(X)$ is the power set of $X$;
-    \item[Meet operator:] at a join point, the taint status of a variable is tainted if it is tainted along at least one incoming path. The meet operator is therefore the union of the taint sets of its predecessors.
-    \item[Transfer function:] the transfer function for taint analysis has the form:
+    where $X$ is the set of all variables in the program, and $\mathcal{P}(X)$ is the permutation set of $X$;
+    \item \textbf{Meet operator:} at a join point, the taint status of a variable is tainted if it is tainted along at least one incoming path. 
+    The meet operator is therefore the union of the taint sets of its predecessors. Formally:
+    \[In(n) = \bigcup_{p\in pred(n)} Out(p)\]
+    \item \textbf{Transfer function:} the transfer function for taint analysis has the form:
     \[f_n(x) = Gen[n] \cup (x \setminus Kill[n])\]
     where:
     \begin{itemize}
@@ -46,12 +50,29 @@ Static Taint Analysis can be implemented by customizing the data flow analysis f
         \[Gen[n] = \{x \in X | x \text{ is assigned an input value at statement } n\} \]
         \[\cup\]
         \[\{x \in X |\exists y \in X: x \text{ is assigned a value obtained from }y \wedge  y \rightarrow T\}  \]
+        This means that, at a statement $n$, a variable $x$ is considered tainted if it is directly assigned a value from an untrusted source or if it is derived from another tainted variable $y$.
         \item $Kill[n]$: the set of variables that are untainted at node $n$. It's formally defined as:
         \[Kill[n] = \{x \in X | x \text{ is sanitized at statement } n\} \]
         \[\cup\]
         \[\{x \in X |\forall y \in X: x \text{ is assigned a value obtained from }y \wedge  y \rightarrow F\}  \]
+        This means that, at a statement $n$, a variable $x$ is considered untainted if it is sanitized or if it is derived solely from untainted variables.
     \end{itemize}
-\end{definitions}
+\end{itemize}
+For example, consider the following code snippet:
+\begin{lstlisting}[language=Python]
+def foo:
+    y = 5
+    x = input() 
+    x = check(x)
+    z = x + y
+    return z
+\end{lstlisting}
+We can say that:
+\begin{itemize}
+    \item at line 2, variable \texttt{x} is tainted because it receives data from an untrusted source (user input);
+    \item at line 3, variable \texttt{x} is untainted because it is sanitized by the function \texttt{check()};
+    \item at line 4, variable \texttt{z} is also untainted because it is derived from two untainted variables (\texttt{x} and \texttt{y}).
+\end{itemize}
 \subsubsection[short]{Algorithm}
 The algorithm for static taint analysis can be summarized as follows:
 \begin{algorithm}
@@ -69,6 +90,9 @@ The algorithm for static taint analysis can be summarized as follows:
 \Until{no changes in any $In(n)$ or $Out(n)$}
 \end{algorithmic}
 \end{algorithm}
+The algorithm initializes the \textbf{Gen} and \textbf{Kill} sets for each node in the CFG. It then iteratively computes the \textbf{In} and \textbf{Out} sets for each node until no further changes occur.
+At the end of the analysis, we can check if any tainted variable reaches a sink without being sanitized, indicating a potential security vulnerability.
+
 \subsubsection[short]{Limitations}
 Static taint analysis has some limitations:
 \begin{itemize}

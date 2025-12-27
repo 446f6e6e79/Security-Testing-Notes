@@ -1,0 +1,82 @@
+\section{Exercises}
+\subsection{Static Taint Analysis}
+Consider the following code snippet:
+\begin{lstlisting}[language=PHP]
+<?php
+    $userid = $_GET['userid'];
+    $passwd = $_GET['passwd'];
+    $passwd = addslashes($passwd);
+    echo $passwd;
+    $query = "SELECT * FROM users WHERE userid = '$userid' AND passwd = '$passwd'";
+    $result = mysql_query($query);
+?>
+\end{lstlisting}
+\begin{enumerate}
+    \item First, we can build the CFG for the program. We create one node for each statement and connect them based on the control flow of the program.
+    \item Next, we compute the \textbf{Gen} and \textbf{Kill} sets for each node;
+    \item Then, we iteratively compute the \textbf{In} and \textbf{Out} sets for each node until no further changes occur;
+    \item Finally, we check if any tainted variable reaches a sink without being sanitized.
+\end{enumerate}
+\paragraph{Step 1: CFG}
+The CFG for the above code snippet can be represented as a line of nodes, where each node corresponds to a statement in the code.
+Since no control flow statements (like conditionals or loops) are present, the CFG is straightforward.
+
+\paragraph{Step 2: Gen and Kill sets}
+We can compute the \textbf{Gen} and \textbf{Kill} sets for each node remembering the definitions from the Taint Analysis section:
+\begin{itemize}
+    \item $Gen(n)$: the set of variables that are tainted at node $n$;
+    \item $Kill(n)$: the set of variables that are untainted at node $n$;
+\end{itemize}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Node} & \textbf{Gen[n]} & \textbf{Kill[n]} \\
+    \hline
+    1 & \{\$userid\} & \{\} \\
+    2 & \{\$passwd\} & \{\} \\
+    3 & \{\} & \{\$passwd\} \\
+    4 & \{\} & \{\} \\
+    5 & \{\} & \{\} \\
+    6 & {[\$userid = T $\lor$ \$passwd = T]\$query} & \{[\$userid = T $\land$ \$passwd = T]\$query\} \\
+    7 & \{[\$query=T]\$result\} & \{[\$query=F]\$result\} \\
+    \hline
+    \end{tabular}
+    \caption{Gen and Kill sets for each node in the CFG}
+\end{table}
+We can see that at node 6, the taint status of the variable \texttt{\$query} is tainted if either \texttt{\$userid} or \texttt{\$passwd} is tainted. 
+Since \texttt{\$userid} is tainted and \texttt{\$passwd} is untainted (due to sanitization at node 3), we could also conclude that the taint status of \texttt{\$query} is tainted.
+\paragraph{Step 3: In and Out sets}
+We can now iteratively compute the \textbf{In} and \textbf{Out} sets for each node using the data flow equations:
+\begin{itemize}
+    \item $In[n] = \cup_{p\in pred(n)}Out(p)$
+    Defined as the union of all outgoing taint sets from predecessor nodes;
+    \item $Out[n] = Gen[n] \cup (In[n] \setminus Kill[n])$
+    Defined as the union of the generated taint set at node $n$ and the incoming taint set minus the killed taint set (variables untainted) at node $n$;
+\end{itemize}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Node} & \textbf{In[n]} & \textbf{Out[n]} \\
+    \hline
+    1 & \{\} & \{\$userid\} \\
+    2 & \{\$userid\} & \{\$userid, \$passwd\} \\
+    3 & \{\$userid, \$passwd\} & \{\$userid\} \\
+    4 & \{\$userid\} & \{\$userid\} \\
+    5 & \{\$userid\} & \{\$userid\} \\
+    6 & \{\$query\} & \{\$query\} \\
+    7 & \{\$query, \$userid\} & \{\$result, \$query, \$userid\} \\
+    \hline
+    \end{tabular}
+    \caption{In and Out sets for each node in the CFG}
+\end{table}
+\paragraph{Step 4: Check for vulnerabilities}
+Finally, we check if any tainted variable reaches a sink without being sanitized.
+In this case, we can see that at node 6, the variable \texttt{\$query} is tainted because it depends on the tainted variable \texttt{\$userid}.
+We also have that \texttt{\$query} is used in a sink (the SQL query execution) without being sanitized.
+Therefore, we can conclude that there is a potential SQL injection vulnerability in the code snippet due to the tainted variable \texttt{\$userid} reaching the sink without sanitization.
+\paragraph{Important}
+When considering the taint status of variables after being sanitized, we must ensure that the sanitization function effectively removes all the taint for the specific vulnerability.
+For example, in this case, the function \texttt{addslashes()} is used to sanitize \texttt{\$passwd}. 
+It is effective against \textit{SQL Injection} attacks, but it does not affect the taint status in case of other vulnerabilities, such as \textit{Cross-Site Scripting} (XSS).
