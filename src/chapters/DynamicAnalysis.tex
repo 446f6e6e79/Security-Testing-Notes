@@ -5,6 +5,7 @@ There are two main strategies to perform dynamic analysis:
     \item \textbf{Testing}: executing the program with specific inputs and checking the outputs against expected results;
     \item \textbf{Fuzzing}: generating random or semi-random inputs to the program and observing its behavior for crashes or unexpected outputs;
 \end{itemize}
+
 \subsection{Testing}
 We can differentiate between two main types of testing:
 \begin{itemize}
@@ -103,8 +104,8 @@ The effectiveness of the test suite can be measured using the \textbf{mutation s
 We say that a test suite is \textbf{mutation adequate} if it achieves 100\% mutation score.
 
 \subsection{Fuzzing}
-Fuzzing is a \textbf{highly effective} and \textbf{automated} security testing technique.
-It involves generating \textbf{random or semi-random inputs} to a program and check for crashes, memory leaks, or unexpected behavior.
+Fuzzing is a highly effective and automated security testing technique.
+It involves generating random or semi-random inputs to a program and check for crashes, memory leaks, or unexpected behavior.
 Some examples of test inputs are:
 \begin{itemize}
     \item Very \textbf{long} or \textbf{empty} strings;
@@ -112,6 +113,9 @@ Some examples of test inputs are:
     \item \textbf{Malformed} data structures or files;
     \item \textbf{Unexpected} sequences of inputs or commands, usually specific to the application domain.
 \end{itemize}
+We are not testing functionality, so we don't need to check for expected outputs. The goal is to simply observe the 
+program's behavior when subjected to these inputs.
+
 \subsubsection{Types of Fuzzing}
 \begin{itemize}
     \item \textbf{Dump fuzzing}: fuzzing that does not consider the context and state of the software.
@@ -127,6 +131,14 @@ Some examples of test inputs are:
         \item \textbf{Generation based}: creates inputs from scratch based on a model of the input space.
     \end{itemize}
 \end{itemize}
+\subsubsection*{Application of fuzzing}
+Fuzzing can be applied to different types of software:
+\begin{itemize}
+    \item \textbf{Desktop applications}: fuzzing can be used to test desktop applications, focusing on their UI, command line interfaces, and file handling capabilities;
+    \item \textbf{Web applications}: fuzzing can be used to test web applications, focusing on URLs, forms and requests;
+    \item \textbf{Protocols}: the fuzzer can send generated packets to the tested application or eventually, act as a proxy between two communicating entities;
+    \item \textbf{Files format}: the fuzzer can generate malformed or unexpected files to test the application's file parsing capabilities.
+\end{itemize}
 \subsubsection{Pros and cons of Fuzzing}
 \begin{itemize}
     \item \textbf{Pros}:
@@ -136,6 +148,8 @@ Some examples of test inputs are:
     \end{itemize}
     \item \textbf{Cons}:
     \begin{itemize}
+        \item Tend to find simple bugs, while more complex vulnerabilities may require more sophisticated analysis;
+        \item May generate a large number of false positives, that are hard to debug if we don't have access to the source code;
         \item Fuzzers don't guarantee full coverage of the codebase;
         \item Crashes may be hard to reproduce and debug;
         \item For programs with complex input formats, generating valid inputs and achieving good coverage can be challenging.

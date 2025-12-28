@@ -1,25 +1,36 @@
 \section{AI for Vulnerability Detection}
-Vulnerability detection with AI tools involves using machine learning algorithms to identify potential security flaws in software systems.
+Vulnerability detection with AI tools involves the usage of \textit{machine learning algorithms} to identify potential security flaws in software systems.
 These tools can analyze code, configurations and system behaviors to detect anomalies that may be exploited by attackers.
 Various task level are considered in vulnerability detection, including:
 \begin{itemize}
-    \item \textbf{CWE classification:} AI models can be trained to classify vulnerabilities according to the Common Weakness Enumeration (CWE) taxonomy, helping security teams prioritize remediation efforts;
-    \item \textbf{Source code classification:} binary classifier between vulnerable and non-vulnerable code snippets;
+    \item \textbf{CWE classification:} AI models can be trained to classify vulnerabilities according to the Common Weakness Enumeration (CWE) taxonomy, 
+    helping security teams prioritize remediation efforts;
+    \item \textbf{Source code classification:} binary classifier between vulnerable and non-vulnerable code snippets. 
+    These can be done at different granularity levels (statement-level, function-level, file-level).
 \end{itemize}
+Learning-based algorithms can generalize from known labeled vulnerabilities to identify new,
+previously unseen vulnerabilities, making them valuable tools in the ever-evolving landscape of software security.
+\\\\In this section, we will explore the main techniques used in AI-based vulnerability detection, along with their limitations. 
+We will take for granted the knowledge of basic machine learning concepts.
+
 \subsection{Techniques}
 AI-based vulnerability detection techniques can be broadly categorized based on the algorithms they use.
+
 \subsubsection{Sequence-based models}
-Sequence-based models are machine learning models that process input data as sequences of elements (tokens, characters, etc.), to identify patterns indicative of vulnerabilities.
+Sequence-based models are machine learning models that process input data as sequences of elements (tokens, characters, etc.), 
+to identify patterns indicative of vulnerabilities.
 Common sequence-based models include:
 \begin{itemize}
     \item \textbf{Recurrent Neural Networks (RNNs)};
     \item \textbf{Long Short-Term Memory (LSTM) networks};
-    \item \textbf{transformer-based models};
+    \item \textbf{transformer-based models}, the most used.
 \end{itemize}
 The code is typically tokenized and represented as sequences before being fed into these models for training.
+
 \subsubsection{Graph-based models}
-Graph-based models have shown capabilities in capturing the structural relationships within code, making them suitable for vulnerability detection tasks.
-These models work via message passing between nodes in a graph representation of the code, allowing them to learn complex global features.
+\textit{Graph-based models} have shown capabilities in capturing the structural relationships within code, 
+making them suitable for vulnerability detection tasks. 
+\\These models work via message passing between nodes in a graph representation of the code, allowing them to learn complex global features.
 Common graph-based models include:
 \begin{itemize}
     \item \textbf{Graph Neural Networks (GNNs)};
@@ -27,5 +38,29 @@ Common graph-based models include:
     \item \textbf{Graph Attention Networks (GATs)}.
 \end{itemize}
 Graph-based models often utilize Abstract Syntax Trees (ASTs) or Control Flow Graphs (CFGs) to represent the code structure.
-First they need to decide on prediction granularity (file-level, function-level, line-level) before training. Usually an intermidiate representation of the code is created to extract graph features.
-\subsection{Limitations}
+\paragraph{Training considerations}
+Before training graph-based models for vulnerability detection, several considerations must be addressed.
+First, it's important to decide on prediction granularity (file-level, function-level, line-level) before training. 
+Usually an intermediate representation of the code is created to extract graph features.
+\\Source code labelling is another important and challenging task, as it requires expert knowledge to accurately identify vulnerabilities.
+A common approach is:
+\begin{itemize}
+    \item Code lines removed in vulnerability-fixing commits are labelled as vulnerable;
+    \item All the other dependencies of the modified code are considered vulnerable.
+\end{itemize}
+
+\subsection{Explainable AI}
+As always, AI-based approaches have some limitations regarding the explainability of the obtained results.
+In vulnerability detection, it's crucial to understand why a model flagged a particular piece of code as vulnerable.
+\\To provide explanations for vulnerability predictions, several methods can be employed:
+\begin{itemize}
+    \item \textbf{Model-agnostic methods:} these methods work independently of the underlying model architecture.
+    They try to approximate the model's behavior using simpler, interpretable models.
+    \item \textbf{Model-specific methods:} these methods are tailored to specific model architectures, and are based on the knowledge of the model's inner workings.
+\end{itemize}
+
+\subsubsection*{SHAP}
+SHAP (SHapley Additive exPlanations) is a popular model-agnostic method for explaining the predictions of machine learning models.
+It shows the contribution of each feature to the final prediction.
+It is based on the breakdown of the prediction into to show the impact of each feature.
+\\In the context of vulnerability detection, SHAP can assign to each token a score indicating its positive or negative contribution to the vulnerability prediction.

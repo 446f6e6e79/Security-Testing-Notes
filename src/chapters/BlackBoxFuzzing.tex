@@ -1,6 +1,6 @@
 \subsection{Black-box fuzzing}
-Black-box fuzzing is a software testing technique, based on the concept of \textbf{fuzzing}, that focuses on testing the 
-external behavior of a program without any knowledge of its internal structure or implementation.
+Black-box fuzzing is a fuzzing technique that treats the target program as a "black box", 
+focusing on its external behavior without any knowledge of its internal structure or implementation.
 To derive test cases, black-box fuzzing relies only on the program's input and output specifications.
 \\There are several types of black-box fuzzing techniques, including:
 \begin{itemize}
@@ -9,10 +9,12 @@ To derive test cases, black-box fuzzing relies only on the program's input and o
     \item \textbf{Mutation based fuzzing}: existing valid inputs are modified or mutated to create new test cases;
     \item \textbf{Equivalence partitioning}: inputs are divided into equivalence classes, and test cases are generated from each class to ensure coverage of all possible scenarios.
 \end{itemize}
+
 \subsubsection{Random testing}
 Random testing is the simplest form of black-box fuzzing, where input values are randomly generated from the input space of the program.
-This technique is easy to implement and can quickly generate a large number of test cases, 
-but it may not be effective in finding specific types of bugs or vulnerabilities.
+This technique is easy to implement and can quickly generate a large number of test cases.
+Since the inputs are randomly generated, it may not be effective in finding specific types of bugs or vulnerabilities.
+
 \subsubsection{Grammar based fuzzing}
 In grammar based fuzzing, test cases are generated from a predefined grammar that describes the valid input format for the program.
 This technique is particularly useful for testing programs that accept structured inputs, only creating valid inputs.
@@ -32,6 +34,7 @@ modified or mutated to create new test cases.
     \item \textbf{Test of collected inputs}: the seed inputs are executed on the PDF viewer application to ensure they are valid and do not cause any crashes or unexpected behavior;
     \item \textbf{Mutation of inputs}: using a mutation algorithm, grab the seed inputs and apply various mutations to them. Feed the mutated inputs back into the application;
 \end{enumerate}
+
 \subsubsection{Equivalence partitioning}
 In equivalence partitioning, the input space of the program is divided into equivalence classes, called \textbf{partitions}.
 We can assume that:

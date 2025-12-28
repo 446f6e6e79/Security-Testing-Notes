@@ -1,56 +1,74 @@
 \section{Introduction}
-Before starting to analyze the different types of \textbf{software vulnerabilities} and the related \textbf{testing techniques}, it's important to define some \textbf{basic concepts} and \textbf{terminology} that will be used throughout the document.
+Before starting to analyze the different types of software vulnerabilities and the related testing techniques, 
+it's important to define some basic concepts and terminology that will be used throughout the document.
+
 \subsection{Definitions}
-\begin{definitions}
-    \item[Software:] software can be defined as a set of \textbf{programs} and \textbf{data}, that provides \textbf{functionality}. Software and functionality always come with certain risks.
-    \item[Security:] managing the risks introduced by software. This includes \textbf{understanding} and \textbf{identifying} security risks, and how to \textbf{mitigate them}.
-    \item[Secure software:] a software is \textbf{considered secure} if it satisfies a series of security objectives, such as:
-    \begin{itemize}
-        \item \textbf{Confidentiality}: \textbf{unauthorized users} cannot \textbf{have access} or read information;
-    
-        \item \textbf{Integrity}: \textbf{unauthorized users} cannot \textbf{change} the information;
+\paragraph{Software}
+Software can be defined as a set of programs and data, that provides functionality. 
+Software and functionality always come with certain security risks. 
+Every new feature added to a software can introduce new vulnerabilities.
 
-        \item \textbf{Availability}: \textbf{authorized users} can always have access to the information.
-    \end{itemize}
-    There are many other security objectives. Each software doesn't have to implement each of them, but it's useful to find a good \textbf{trade-off} between \textbf{security} and \textbf{functionality}.
-    \item[Safety vs Security:] there's a slight difference between the two definitions, that is important to denote:
-    \begin{itemize}
-        \item \textbf{Safety}: protecting the system from \textbf{accidental risks};
-        \item \textbf{Security}: \textbf{mitigating} the risk of danger caused by \textbf{intentional} or \textbf{malicious actions}.
-        If a software does not achieve the security requirements, it can lead to security failures.
-    \end{itemize}
-    \item[Weakness:] a condition in a software (bug) that, under certain circumstances, could contribute to the introduction of vulnerabilities.
+\paragraph{Security}    
+Managing the risks introduced by software. 
+This includes understanding and identifying security risks, and how to mitigate them.
 
-    \item[Vulnerability:] a chain of \textbf{weaknesses} linked by causality. If \textbf{exploited}, this can lead to a \textbf{security failure}.
+\paragraph{Secure Software}    
+A software is considered secure if it satisfies a series of security objectives, such as:
+\begin{itemize}
+    \item \textbf{Confidentiality}: unauthorized users cannot have access or read information;
+    \item \textbf{Integrity}: unauthorized users cannot change the information;
+    \item \textbf{Availability}: authorized users can always have access to the information.
+\end{itemize}
+There are many other security objectives. Each software doesn't have to implement each of them, but it's useful to find a good trade-off between security and functionality.
 
-    \item[Security risk:] refers to the \textbf{probability} that a threat (any external actor) will \textbf{exploit a vulnerability}, combined with the \textbf{resulting impact} (damage).
+\paragraph{Safety vs Security}
+There's a slight difference between the two definitions, that is important to denote:
+\begin{itemize}
+    \item \textbf{Safety}: protecting the system from accidental risks;
+    \item \textbf{Security}: mitigating the risk of danger caused by intentional or malicious actions.
+    If a software does not achieve the security requirements, it can lead to security failures.
+\end{itemize}
 
-    \item[CWE:] \textbf{Common Weakness Enumeration}, provides a \textbf{public list} of the most common software and hardware \textbf{weaknesses} that can contribute to security vulnerabilities.
+\paragraph{Weakness}
+A condition in a software (bug) that, under certain circumstances, could contribute to the introduction of vulnerabilities.
 
-    \item [CVE:] \textbf{Common Vulnerabilities and Exposure}, is a public list of \textbf{vulnerabilities} in widely-used software components.
-    
-    \item [NVD:] \textbf{National Vulnerability Database}, public available database of CVEs. It provides additional information, such as \textbf{severity scores} and \textbf{impact ratings}.
-\end{definitions}
+\paragraph{Vulnerability}
+A chain of weaknesses linked by causality. If exploited by an attacker, this can lead to a security failure.
+
+\paragraph{Security Risk}
+A security risk refers to the probability that a threat (any external actor) will exploit a vulnerability, 
+combined with the resulting impact (damage). The risk can be calculated as:
+\[\text{Risk} = \text{Likelihood} \times \text{Impact}\]
+
+\paragraph{Collections}
+We can find some important databases and collections related to software security:
+\begin{itemize}
+    \item \textbf{OWASP}: Open Web Application Security Project, is a non-profit organization focused on improving the security of software. It provides a series of resources, 
+    such as the \textit{OWASP Top 10}, a list of the most critical web application security risks.
+    \item \textbf{CWE}: Common Weakness Enumeration, provides a public list of the most common software and hardware weaknesses that can contribute to security vulnerabilities.
+    \item \textbf{CVE}: Common Vulnerabilities and Exposure, is a public list of vulnerabilities in widely-used software components.
+    \item \textbf{NVD}: National Vulnerability Database, public available database of CVEs. It provides additional information, such as severity scores and impact ratings.
+\end{itemize}
 
 \subsection{Bug Exploitation}
-A \textbf{bug} is an error in the software code that can lead to unexpected behavior. An \textbf{attacker} will try to \textbf{exploit} a bug to make
+A bug is an error in the software code that can lead to unexpected behavior. An attacker will try to exploit a bug to make
 the software behave in an unintended way, to achieve its malicious goals.
-To achieve its goals, the attacker may need several exploits, chained together, composing an \textbf{attack path}.
+To achieve its goals, the attacker may need several exploits, chained together, composing an attack path.
 
 \subsection{Security Meta-Model}
 In the context of software security, a meta-model can be defined to represent the relationships between different security concepts, such as vulnerabilities, threats, and attacks. 
 This meta-model can help security professionals understand the attack surface of a system and identify potential weaknesses.
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{../../images/securityMetaModel.png}
     \caption{Security Meta-Model}
 \end{figure}
 
 \subsection{Software Development Life Cycle}
-The \textbf{SDLC} is the series of \textbf{processes} and \textbf{procedures} that enables teams to \textbf{create software} and applications. The cycle is composed of various phases:
+The SDLC is the series of processes and procedures that enables teams to create software and applications. The cycle is composed of various phases:
 \begin{itemize}
-    \item \textbf{Planning}: the senior members of the team, with the inputs from the customers, \textbf{plans} the basic \textbf{project plan};
-    \item \textbf{Defining}: during this phase, the document for the \textbf{product requirements} should be defined;
+    \item \textbf{Planning}: the senior members of the team, with the inputs from the customers, plans the basic project plan;
+    \item \textbf{Defining}: during this phase, the document for the product requirements should be defined;
     \item \textbf{Designing}: designing the architecture for the whole project;
     \item \textbf{Building}: generating the programming code. The output should be the working final system;
     \item \textbf{Testing}: during this phase, products defects are reported, tracked and fixed;
@@ -58,9 +76,9 @@ The \textbf{SDLC} is the series of \textbf{processes} and \textbf{procedures} th
 \end{itemize}
 
 \subsubsection{From a security perspective}
-Now, we are going to analyze, from a \textbf{security perspective}, what should be done by a team during each of the just mentioned phases.
+Now, we are going to analyze, from a security perspective, what should be done by a team during each of the just mentioned phases.
 \paragraph{Planning:}
-During this phase, the \textbf{security objectives} required by the software should be defined. The organization should also identify the regulations it needs to follow. 
+During this phase, the security objectives required by the software should be defined. The organization should also identify the regulations it needs to follow. 
 
 \paragraph{Defining:}
 This phase is composed of three main activities:
@@ -68,14 +86,14 @@ This phase is composed of three main activities:
 \begin{itemize}
     \item \textbf{Gap Analysis}: identify whether there is a need to provide training sessions (security and security awareness training) for the developers involved in the project;
     \item \textbf{Risk Assessment}: analyze potential threats and vulnerabilities, and evaluate their possible impact on the project;
-    \item \textbf{Third-party software tracking}: a list containing both open-source and commercial \textbf{third-party software} must be defined. This allows the team to check the used software for updates and security patches.
+    \item \textbf{Third-party software tracking}: a list containing both open-source and commercial third-party software must be defined. This allows the team to check the used software for updates and security patches.
 \end{itemize}
 
 \paragraph{Designing:}
 \begin{itemize}
-    \item \textbf{Least-privilege principle}: the program should always run on the account with the least privilege possible;
-    \item \textbf{Deny by default}: each access should be denied by default, unless explicitly allowed.
-    \item \textbf{Design Review}: the developer has to act as an attacker to discover vulnerabilities in the defined features.
+    \item Least-privilege principle: the program should always run on the account with the least privilege possible;
+    \item Deny by default: each access should be denied by default, unless explicitly allowed.
+    \item Design Review: the developer has to act as an attacker to discover vulnerabilities in the defined features.
 \end{itemize}
 
 \paragraph{Building:}
@@ -88,7 +106,7 @@ While the project is being built, is always important to follow the security gui
     \item Deal with errors and exception;
     \item Avoid the creation of files when possible. Otherwise, be caution when handling them.
 \end{itemize}
-There are some frameworks, such as \textbf{OWASP} that can help in the secure coding rule knowledge.
+There are some frameworks, such as OWASP that can help in the secure coding rule knowledge.
 
 \subparagraph{Code review:} conducted by a team of developers, that manually checks the code, focusing on implementation bugs. Usually, a checklist is used for checking secure coding.
 
@@ -109,6 +127,6 @@ Different types of tests are usually run, such as:
 Regardless, bugs should always be fixed ASAP, to reduce the cost of fixing them.
 
 \subsubsection{DevOps}
-The \textbf{DevOps} cycle is based on two main ideas: \textbf{rapid delivery} of new software and \textbf{quick feedback}. 
+The DevOps cycle is based on two main ideas: rapid delivery of new software and quick feedback. 
 Developers continuously deliver new features in a short time span, based on 8 phases.
 Developers regularly merge their code changes in a central repository (CI \textit{Continuous Integration}), where it gets automatically built, tested, and prepared for a release to production (CD \textit{Continuous Delivery}).
