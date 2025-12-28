@@ -102,12 +102,12 @@ Static taint analysis has some limitations:
 \end{itemize}
 \subsection{Dynamic taint analysis}
 Dynamic taint analysis tries to overcome some of the limitations of static taint analysis by tracking tainted variables during program execution.
-\begin{definitions}
-    \item[Traces:] flow of data through the program;
-    \item[Taint sources:] points where tainted data is introduced into the program;
-    \item[Taint propagation:] how taint status is transferred between variables during execution;
-    \item[Sinks:] points where tainted data is used in a potentially dangerous way.
-\end{definitions}
+\begin{itemize}
+    \item \textbf{Traces}: flow of data through the program;
+    \item \textbf{Taint sources}: points where tainted data is introduced into the program;
+    \item \textbf{Taint propagation}: how taint status is transferred between variables during execution;
+    \item \textbf{Sinks}: points where tainted data is used in a potentially dangerous way.
+\end{itemize}
 Code instrumentation is usually used to implement dynamic taint analysis. It consists in modifying the program code to insert additional instructions that track the taint status of variables during execution.
 This type of instrumentation can be done at different levels:
 \begin{itemize}

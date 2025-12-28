@@ -1,23 +1,29 @@
-\section{Testing}
-Dynamic analysis, also referred to as \textbf{testing}, involves examining a program's behavior during its execution. We can 
-differientiate between two main types of testing:
+\section{Dynamic Analysis}
+Dynamic analysis is a software verification technique that involves executing the program and observing its behavior.
+There are two main strategies to perform dynamic analysis:
+\begin{itemize}
+    \item \textbf{Testing}: executing the program with specific inputs and checking the outputs against expected results;
+    \item \textbf{Fuzzing}: generating random or semi-random inputs to the program and observing its behavior for crashes or unexpected outputs;
+\end{itemize}
+\subsection{Testing}
+We can differentiate between two main types of testing:
 \begin{itemize}
     \item \textbf{Testing}: verifies the functionality of the software against sensible inputs and border cases. It checks that functionalities work as expected;
     \item \textbf{Security testing}: looks for wrong, unwanted and strange behaviors of the software that could lead to vulnerabilities and security issues.
 \end{itemize}
-
-\paragraph{Test suite:} a collection of test cases that are intended to be executed together to validate the behavior of a software application.
-Each test case is composed of a \textbf{test input} and an \textbf{expected output}, which is used to verify the correctness of the software's behavior.
-
-\paragraph{Problem of testing:}
+As we said before, testing involves executing the program with specific inputs and checking the outputs against expected results.
+A \textbf{test suite} is a collection of test cases that are intended to be executed together to validate the behavior of a software application.
+Each \textbf{test case} is composed of a test input and an expected output, which is used to verify the correctness of the software's behavior.
+\\\\When designing a test suite, several key questions need to be addressed:
 \begin{itemize}
     \item How to \textbf{identify} the \textbf{test cases}?
     \item How to identify the \textbf{test oracle}?
     \item When to \textbf{stop testing}?
 \end{itemize}
 
-\subsection{Test coverage criteria}
-A \textbf{test coverage criterion} defines a set of requirements that a test suite must satisfy to be considered adequate.
+\subsubsection{Test coverage criteria}
+Tipically, for a tested software, there are an infinite number of possible inputs and execution paths. This makes it impossible to test all possible scenarios.
+\\A \textit{test coverage criterion} defines a set of requirements that a test suite must satisfy to be considered adequate.
 It aims at insuring that a test suite is comprehensive enough and that all relevant and critical application 
 aspects and functionality are covered.
 \\Test coverage criteria can:
@@ -47,30 +53,34 @@ We first havw to introduce a few definitions:
         covers the largest number of new elements, add subsets based on the number of new elements they cover.
     \end{itemize}
 \end{itemize}
-\subsubsection{Statement coverage criteria}
+We can now describe the different code coverage criteria.
+\subsubsection*{Statement coverage criteria}
 Statement coverage aims at involving the execution of \textbf{all possible statements} in the code at least once during testing.
 It can be defined as:
-\[\text{coverage}=\frac{\text{executed statements}}{\text{total statements}} \cdot 100\]
-The goal is to identify test cases that covers different portion of the code.
+\[\text{coverage}=\frac{\text{\#executed statements}}{\text{\#total statements}} \cdot 100\]
+The goal is to identify test cases that covers different portion of the code. 
+We need to design test cases that exercise different portions of the code.
 \\\\Considering the whole suite, we can define:
 \[\text{TSC}=\frac{\text{covered statement}}{\text{total statements}} \cdot 100\]
+Given the previous example, we can see that test case 2 covers no new statements compared to test case 1, so it can be removed from the suite.
 
-\subsubsection{Decision coverage criteria}
+\subsubsection*{Decision coverage criteria}
 Decision coverage aims at ensuring that \textbf{the possible outcomes of all boolean expressions} are executed at least once during testing.
 It can be defined as:
 \[\text{coverage}=\frac{\text{executed decision outcomes}}{\text{total decision outcomes}} \cdot 100\]
+For example, consider the previous code snippet
 To fully cover all decision outcomes, test cases must be designed to evaluate each boolean expression to both true and false.
 \\\\Considering the whole suite, we can define:
 \[\text{TSC}=\frac{\text{covered decision}}{\text{total decision}} \cdot 100\]
 
-\subsubsection{Condition coverage criteria}
+\subsubsection*{Condition coverage criteria}
 Similar to decision coverage, condition coverage focuses on ensuring that \textbf{each individual condition} within a decision point is evaluated to both true and false at least once during testing.
 It can be defined as:
 \[\text{coverage}=\frac{\text{executed condition outcomes}}{\text{total condition outcomes}} \cdot 100\]
 \\\\Considering the whole suite, we can define:
 \[\text{TSC}=\frac{\text{covered condition}}{\text{total condition}} \cdot 100\]
 
-\subsubsection{Branch coverage criteria}
+\subsubsection*{Branch coverage criteria}
 Branch coverage aims at ensuring that \textbf{all possible branches} of control structures are executed. 
 To ensure this, it checks that every possible edge in the control flow graph is traversed during testing.
 It can be defined as:
@@ -78,17 +88,18 @@ It can be defined as:
 \\\\Considering the whole suite, we can define:
 \[\text{TSC}=\frac{\text{covered branches}}{\text{total branches}} \cdot 100\]
 
-\subsection{Mutation testing}
-The goal of \textbf{mutation testing} is to evaluate the effectiveness of a test suite in discovering real faults in the software.
-It involves creating \textbf{mutants} of the original program by introducing small changes (mutations) to its code.
+\subsubsection{Mutation testing}
+The goal of \textit{mutation testing} is to evaluate the effectiveness of a test suite in discovering real faults in the software.  
+It involves creating \textit{mutants} of the original program by introducing small changes (mutations) to its code.
 \\\\The process of mutation testing can be summarized in the following steps:
 \begin{enumerate}
-    \item \textbf{Mutant generation:} create a set of mutants by applying mutation operators to the original program. Each mutant should differ from the original program by a small single change;
+    \item \textbf{Mutant generation:} create a set of mutants by applying mutation operators to the original program. 
+    Each mutant should differ from the original program by a small single change. The code must still compile and run after the mutation;
     \item \textbf{Test execution:} run the existing test suite against each mutant. Record whether the test suite detects the mutation;
     \item \textbf{Mutant analysis:} analyze the results of the test executions to determine which mutants were "killed" (detected by the test suite) and which survived (not detected);
 \end{enumerate}
 The effectiveness of the test suite can be measured using the \textbf{mutation score}:
-\[\text{Mutation Score}=\frac{\text{Killed Mutants}}{\text{Total Mutants}} \cdot 100\]
+\[\text{Mutation Score}=\frac{\text{\#Killed Mutants}}{\text{\#Total Mutants}} \cdot 100\]
 We say that a test suite is \textbf{mutation adequate} if it achieves 100\% mutation score.
 
 \subsection{Fuzzing}
