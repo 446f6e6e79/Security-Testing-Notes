@@ -59,14 +59,14 @@ This allows the attacker to run arbitrary client-side code, potentially enabling
 
 \subsection{XSS Types}
 There are three main types of XSS attacks, based on how the malicious script is delivered and executed.
-\subsubsection[short]{Reflected (non-persistent)}
+\subsubsection{Reflected (non-persistent)}
   User-supplied input is immediately returned by the web application
   — for example, in search results, error messages, or redirects — without being properly encoded or escaped for safe rendering 
   in the browser. The payload is not stored on the server; instead, an attacker crafts a URL (or form) containing the payload 
   and convinces a victim (for example, via social engineering) to visit it. When the victim follows the link, the server responds 
   with a page that includes the malicious code, which then executes in the victim's browser.
   This is the most common type of XSS, and an example was already shown in the previous section.
-  \subsubsection[short]{Stored (persistent)}
+  \subsubsection{Stored (persistent)}
   User-supplied input is stored on the target server (for example, in a database, 
   profile field, comment, or message) and later served to other users without proper encoding or sanitization. 
   Because the malicious payload is persisted, any user who views the affected page may receive content that contains 
@@ -84,7 +84,7 @@ There are three main types of XSS attacks, based on how the malicious script is 
   \end{lstlisting}
   \end{figure}
   When other users load the page that lists comments, the server includes the stored comment directly in the HTML, and the script executes in each viewer's browser.
-  \subsubsection[short]{DOM-Based}
+  \subsubsection{DOM-Based}
   A form of XSS in which the entire unsafe data flow occurs in the browser. For example, the malicious payload could be included in the URL of the page, and a sensitive JavaScript operation (e.g., document.write, innerHTML, \dots) uses the data to modify the DOM in an unsafe way. 
   In this case, the server does not reflect or store the malicious input; instead, the vulnerability arises from client-side JavaScript code that processes untrusted data without proper validation or sanitization.
   \paragraph{Vulnerable example (client-side)}

@@ -73,7 +73,7 @@ We can say that:
     \item at line 3, variable \texttt{x} is untainted because it is sanitized by the function \texttt{check()};
     \item at line 4, variable \texttt{z} is also untainted because it is derived from two untainted variables (\texttt{x} and \texttt{y}).
 \end{itemize}
-\subsubsection[short]{Algorithm}
+\subsubsection{Algorithm}
 The algorithm for static taint analysis can be summarized as follows:
 \begin{algorithm}
 \caption{Static Taint Analysis Algorithm}
@@ -93,7 +93,7 @@ The algorithm for static taint analysis can be summarized as follows:
 The algorithm initializes the \textbf{Gen} and \textbf{Kill} sets for each node in the CFG. It then iteratively computes the \textbf{In} and \textbf{Out} sets for each node until no further changes occur.
 At the end of the analysis, we can check if any tainted variable reaches a sink without being sanitized, indicating a potential security vulnerability.
 
-\subsubsection[short]{Limitations}
+\subsubsection{Limitations}
 Static taint analysis has some limitations:
 \begin{itemize}
     \item \textbf{False positives:} the analysis may report vulnerabilities that do not actually exist in the program, due to overtainting;

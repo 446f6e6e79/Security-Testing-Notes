@@ -1,0 +1,126 @@
+\section{Testing AI Systems}
+In this section we will briefly discuss both \textit{AI-Security} and \textit{Security Testing of AI systems}.
+
+\subsection{AI-Security}
+AI-Security refers to the practices and methodologies employed to safeguard Artificial Intelligence (AI) systems from various threats and vulnerabilities.
+It covers both:
+\begin{itemize}
+    \item \textbf{Security using AI:} the use of AI and machine learning techniques to enhance cybersecurity 
+    (e.g., intrusion detection systems, malware identification, automated threat analysis);
+    \item \textbf{Security of AI:} ensuring that AI models and their underlying infrastructure are protected from attacks 
+    (e.g., data poisoning, model inversion, adversarial attacks).
+    This includes securing the training data, protecting model integrity, and ensuring the robustness of AI predictions.
+\end{itemize}
+
+\subsubsection{Security using AI}
+The use of AI in cybersecurity has become increasingly prevalent due to its ability to analyze vast amounts of data
+and identify patterns that may indicate potential threats.
+\\By leveraging machine learning algorithms, organizations can improve systems on various fronts:
+\begin{itemize}
+    \item \textbf{Threat Detection}: AI can analyze network traffic, user behavior, and system logs to detect anomalies and potential security incidents;
+    \item \textbf{Malware Classification}: AI models can classify and identify malware based on the behavior of files or processes;
+    \item \textbf{Anomaly Detection}: AI can learn the typical behavior of systems and users, allowing it to identify deviations that may indicate security breaches;
+    \item \textbf{Automated Vulnerability Management}: AI-driven systems can automatically trigger responses to detected threats, reducing the time to mitigate attacks.
+\end{itemize}
+
+\subsubsection{Security of AI}
+Regarding the security of AI systems themselves, we can categorize the vulnerabilities into three main types:
+\begin{itemize}
+    \item \textbf{Adversarial Attacks}: These attacks involve manipulating input data to deceive AI models into making incorrect predictions or classifications;
+    \item \textbf{Data and Privacy Vulnerabilities}: such as data poisoning attacks, model inversion attacks, and membership inference attacks;
+    \item \textbf{System and Implementation Vulnerabilities}: including model theft and supply chain attacks.
+\end{itemize}
+
+\subsubsection{Vulnerabilities in AI Systems}
+OWASP has recently published a list of the top 10 vulnerabilities regarding AI systems. In this section we will briefly discuss them.
+
+\paragraph{1 - Input Manipulation Attack}
+\begin{itemize}
+    \item \textbf{Description}: attackers alter the input data to mislead the model's predictions;
+    \item \textbf{Prevention}: one possible approach is to use robust training techniques, such as adversarial training,
+    to improve the model's resilience against input manipulation;
+    \item \textbf{Examples}: an attacker manipulates network traffic by creating packets in a way that evades the model intrusion detection system.
+\end{itemize}
+\paragraph{2 - Data Poisoning Attack}
+\begin{itemize}
+    \item \textbf{Description}: attackers inject malicious data into the training dataset to cause the model to behave in an unintended manner;
+    \item \textbf{Prevention}: validate and verify the integrity of training data, before using it to train the model;
+    \item \textbf{Examples}: an attacker injects malicious labeled spam emails into the training dataset of a spam filter.
+    This causes the model to misclassify certain spam emails as legitimate.
+\end{itemize}
+\paragraph{3 - Model Inversion Attack}
+\begin{itemize}
+    \item \textbf{Description}: attackers reverse-engineer the model to extract information from it;
+    \item \textbf{Prevention}: limit the access to the model and its outputs;
+    \item \textbf{Examples}: an attacker queries a facial recognition model to reconstruct images of individuals in the training dataset.
+\end{itemize}
+\paragraph{4 - Membership Inference Attack}
+\begin{itemize}
+    \item \textbf{Description}: attackers determine whether a specific data point was used in the model's training dataset;
+    \item \textbf{Prevention}: implement training on randomized or shuffled datasets;
+    \item \textbf{Examples}: an attacker wants to gain access to sensitive financial records of individuals.
+    The attacker trains a model on a dataset of financial records and use it to infer whether specific individuals' records were included in the training data.
+\end{itemize}
+\paragraph{5 - Model Theft}
+\begin{itemize}
+    \item \textbf{Description}: attackers steal the model's architecture or parameters;
+    \item \textbf{Prevention}: encrypt the model code, training data, and parameters;
+    \item \textbf{Examples}: an attacker can have access to a proprietary AI model by either disassembling the model binary or by acessing
+    the model's training data and parameters.
+\end{itemize}
+\paragraph{6 - AI Supply Chain Attack}
+\begin{itemize}
+    \item \textbf{Description}: attackers compromise third-party components or services used in the AI system;
+    \item \textbf{Prevention}: as seen in the previous chapter, implement supply chain security best practices;
+    \item \textbf{Examples}: an attacker compromises a third-party library which the AI system relies on. When the victim 
+    organization updates the library, the malicious code is introduced into their AI system.
+\end{itemize}
+\paragraph{7 - Transfer Learning Attack}
+\begin{itemize}
+    \item \textbf{Description}: attackers train a model on one task and then fine-tunes it for another task, 
+    to cause it to misbehave;
+    \item \textbf{Prevention}: regularly monitor and update the training datasets;
+    \item \textbf{Examples}: an attacker trains a machine learning model on a malicious dataset. The attacker then
+    transfers the model's knowledge to a targeted face recognition system, causing it to misidentify certain individuals.
+\end{itemize}
+\paragraph{8 - Model Skewing Attack}
+\begin{itemize}
+    \item \textbf{Description}: attackers manipulate the model's training process to introduce biases;
+    \item \textbf{Prevention}: ensure diversity and representativeness in the training data. 
+    Only authorized personnel should have access to the training process;
+\end{itemize}
+\paragraph{9 - Output Integrity Attack}
+\begin{itemize}
+    \item \textbf{Description}: attackers manipulate the model's outputs to produce incorrect or misleading results;
+    \item \textbf{Prevention}: implement output validation and verification mechanisms, such as digital signatures or checksums;
+    \item \textbf{Examples}: an attacker gain access to the output layer of a model used to diagnose medical conditions.
+    The attacker modifies the output to mislead healthcare professionals into making incorrect diagnoses.
+\end{itemize}
+\paragraph{10 - Model Poisoning}
+\begin{itemize}
+    \item \textbf{Description}: attackers manipulate the model's parameters or architecture to introduce vulnerabilities;
+    \item \textbf{Prevention}: Adding regularization techniques helps to prevent overfitting and improve the model's robustness against poisoning attacks;
+\end{itemize}
+
+\subsubsection{Attacks Classification}
+Based on the attack duration, model recovery, and system-level output, attacks on AI systems can be 
+classified into two main categories:
+\begin{itemize}
+    \item \textbf{Model-Level Failures}: attack leads the AI model to make incorrect predictions or classifications,
+    without causing any physical harm.
+    \item \textbf{System-Level Failures}: attack causes physical harm or damage to the system or its environment.
+\end{itemize}
+
+\subsection{Security Testing of AI systems}
+Security testing of AI has become essential to ensure the model reliability, ethical compliance, and robustness against adversarial attacks.
+This is particularly important in safety-critical applications, such as autonomous vehicles, healthcare systems, and financial services.
+\\The process can be particularly difficult due to the complexity of AI models. Some common challenges include:
+\begin{itemize}
+    \item \textbf{Non-Deterministic Behavior}: same input can lead to different outputs;
+    \item \textbf{Black-Box Nature}: internal workings of AI models are often not transparent.
+    We have little to no insight into how the model makes decisions;
+    \item \textbf{Data Dependency}: AI models heavily rely on training data quality and representativeness;
+    \item \textbf{Adaptive Threats}: evolving nature of adversarial attacks requires continuous testing and updating of security measures.
+\end{itemize}
+It's important to note that security testing of AI systems should be an ongoing process, not a one-time effort, 
+as new threats and vulnerabilities may emerge over time.
