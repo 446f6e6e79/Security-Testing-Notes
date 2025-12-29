@@ -15,7 +15,7 @@ A path traversal (directory traversal) attack aims to access files and directori
 If the web server is misconfigured, an attacker may be able to modify the path in the URL (for example, using sequences like ``\texttt{../}'' )
 to access files the application did not intend to expose.
 \\\\For example, an attacker could try to access sensitive files by manipulating the URL as follows:
-\begin{lstlisting}[language=php, caption=Example of Directory Traversal Attack]
+\begin{lstlisting}[language=php]
 <?php
 $template = 'blue.php';
 if (isset($_COOKIE['TEMPLATE']))

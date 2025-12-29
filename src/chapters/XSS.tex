@@ -19,37 +19,41 @@ Suppose the request is sent via the URL:
 http://search.com/?query=<UserInput>
 \end{verbatim}
 The server dynamically generates the following response:
-\begin{verbatim}
-<html>
-  <body>
-    Search results for: <UserInput>
-    <ol>
-      <li>http://example.com/result1</li>
-      <li>http://example.com/result2</li>
-    </ol>
-  </body>
-</html>
-\end{verbatim}
+\begin{figure}[H]
+  \begin{lstlisting}[language=HTML]
+  <html>
+    <body>
+      Search results for: <UserInput>
+      <ol>
+        <li>http://example.com/result1</li>
+        <li>http://example.com/result2</li>
+      </ol>
+    </body>
+  </html>
+  \end{lstlisting}
+\end{figure}
 If the attacker provides a malicious input such as:
 \begin{verbatim}
-<script>alert('XSS')</script>
+  <script>alert('XSS')</script>
 \end{verbatim}
-the resulting URL becomes:
+the resulting URL becomes 
 \begin{verbatim}
-http://search.com/?query=<script>alert('XSS')</script>
+http://search.com/?query=<script>alert('XSS')</script>.
 \end{verbatim}
 When the victim visits this URL, the server reflects the input without sanitization, producing the following response:
-\begin{verbatim}
-<html>
-  <body>
-    Search results for: <script>alert('XSS')</script>
-    <ol>
-      <li>http://example.com/result1</li>
-      <li>http://example.com/result2</li>
-    </ol>
-  </body>
-</html>
-\end{verbatim}
+\begin{figure}[H]
+  \begin{lstlisting}[language=HTML]
+  <html>
+    <body>
+      Search results for: <script>alert('XSS')</script>
+      <ol>
+        <li>http://example.com/result1</li>
+        <li>http://example.com/result2</li>
+      </ol>
+    </body>
+  </html>
+  \end{lstlisting}
+\end{figure}
 As a consequence, the browser interprets the injected code as legitimate JavaScript and executes it in the security context of \texttt{search.com}. 
 This allows the attacker to run arbitrary client-side code, potentially enabling actions such as session hijacking, credential theft, or manipulation of page content.
 
@@ -68,7 +72,8 @@ There are three main types of XSS attacks, based on how the malicious script is 
   Because the malicious payload is persisted, any user who views the affected page may receive content that contains 
   executable script, which will run in that user's browser. 
   \paragraph{Example:}
-  \begin{verbatim}
+  \begin{figure}[H]   
+  \begin{lstlisting}[language=HTML]
   <!-- User submits comment containing: -->
   <div>Nice post!</div><script>alert('xss')</script>
 
@@ -76,13 +81,15 @@ There are three main types of XSS attacks, based on how the malicious script is 
   <div class="comment">
     <div>Nice post!</div><script>alert('xss')</script>
   </div>
-  \end{verbatim}
+  \end{lstlisting}
+  \end{figure}
   When other users load the page that lists comments, the server includes the stored comment directly in the HTML, and the script executes in each viewer's browser.
   \subsubsection[short]{DOM-Based}
   A form of XSS in which the entire unsafe data flow occurs in the browser. For example, the malicious payload could be included in the URL of the page, and a sensitive JavaScript operation (e.g., document.write, innerHTML, \dots) uses the data to modify the DOM in an unsafe way. 
   In this case, the server does not reflect or store the malicious input; instead, the vulnerability arises from client-side JavaScript code that processes untrusted data without proper validation or sanitization.
   \paragraph{Vulnerable example (client-side)}
-  \begin{verbatim}
+  \begin{figure}[H]
+  \begin{lstlisting}[language=HTML]
   <!-- index.html (static) -->
   <div id="msg"></div>
   <script>
@@ -91,7 +98,8 @@ There are three main types of XSS attacks, based on how the malicious script is 
     // UNSAFE: inserts raw HTML from the fragment
     document.getElementById('msg').innerHTML = frag;
   </script>
-  \end{verbatim}
+  \end{lstlisting}
+  \end{figure}
 \subsection{XSS mitigation}
 No single technique can solve XSS, but rather a combination of strategies is required:
 \begin{itemize}
