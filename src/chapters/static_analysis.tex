@@ -231,7 +231,7 @@ This is an \textbf{undecidable} problem.
 \subsubsection{Approximations in static analysis}
 Static analysis often relies on approximations of the program's reachable states and behaviors to make the analysis tractable.
 \begin{itemize}
-    \item Sound approximation: every property that holds in the approximation also holds in the actual program. It may produce false positives but guarantees no false negatives;
+    \item Sound approximation: every property that holds in the actual program also holds in the approximation. It may produce false positives but guarantees no false negatives;
     \item Complete approximation: every property that holds in the approximation also holds in the actual program. Also referred as under-approximation, it may produce false negatives but guarantees no false positives;
     \item Conservative approximation: the approximation is sound and complete.
 \end{itemize}
