@@ -46,7 +46,6 @@ We can compute the \textbf{Gen} and \textbf{Kill} sets for each node remembering
     \caption{Gen and Kill sets for each node in the CFG}
 \end{table}
 We can see that at node 6, the taint status of the variable \texttt{\$query} is tainted if either \texttt{\$userid} or \texttt{\$passwd} is tainted. 
-Since \texttt{\$userid} is tainted and \texttt{\$passwd} is untainted (due to sanitization at node 3), we could also conclude that the taint status of \texttt{\$query} is tainted.
 \paragraph{Step 3: In and Out sets}
 We can now iteratively compute the \textbf{In} and \textbf{Out} sets for each node using the data flow equations:
 \begin{itemize}
@@ -72,6 +71,8 @@ We can now iteratively compute the \textbf{In} and \textbf{Out} sets for each no
     \end{tabular}
     \caption{In and Out sets for each node in the CFG}
 \end{table}
+Note that, if the CFG has no cycles, as in this case, the computation will converge in a single pass.
+Otherwise, multiple iterations would be needed until the In and Out sets stabilize.
 \paragraph{Step 4: Check for vulnerabilities}
 Finally, we check if any tainted variable reaches a sink without being sanitized.
 In this case, we can see that at node 6, the variable \texttt{\$query} is tainted because it depends on the tainted variable \texttt{\$userid}.
@@ -112,7 +113,7 @@ We can now compute all the coverage criteria described in the Dynamic Analysis c
 
 \subsubsection*{Statement coverage}
 Statement coverage aims at ensuring that all possible statements in the code are executed at least once during testing.
-It is defined as:
+For a single test case, it is defined as:
 \[\text{coverage}=\frac{\text{executed statements}}{\text{total statements}} \cdot 100\]
 In the given code snippet, there are a total of 11 statements. 
 For each test case, we can track which statements are executed and compute the coverage.
@@ -312,6 +313,7 @@ For example, test case 2 covers nodes 1, 4, 5, 6 so it covers edges (1,4), (4,5)
 \subsection{Mutation Testing}
 For this exercise, we are usually given a code snippet, a set of test case and a set of mutants.
 The goal is to determine which mutants are killed by the test cases.
+A mutant is considered killed if at least one test case fails when executed against the mutant.
 Consider the following code snippet:
 \begin{figure}[H]
     \begin{lstlisting}[language=Java]
