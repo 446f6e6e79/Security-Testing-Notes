@@ -60,19 +60,19 @@ This allows the attacker to run arbitrary client-side code, potentially enabling
 \subsection{XSS Types}
 There are three main types of XSS attacks, based on how the malicious script is delivered and executed.
 \subsubsection{Reflected (non-persistent)}
-  User-supplied input is immediately returned by the web application
-  — for example, in search results, error messages, or redirects — without being properly encoded or escaped for safe rendering 
-  in the browser. The payload is not stored on the server; instead, an attacker crafts a URL (or form) containing the payload 
-  and convinces a victim (for example, via social engineering) to visit it. When the victim follows the link, the server responds 
-  with a page that includes the malicious code, which then executes in the victim's browser.
-  This is the most common type of XSS, and an example was already shown in the previous section.
-  \subsubsection{Stored (persistent)}
-  User-supplied input is stored on the target server (for example, in a database, 
-  profile field, comment, or message) and later served to other users without proper encoding or sanitization. 
-  Because the malicious payload is persisted, any user who views the affected page may receive content that contains 
-  executable script, which will run in that user's browser. 
-  \paragraph{Example:}
-  \begin{figure}[H]   
+User-supplied input is immediately returned by the web application
+— for example, in search results, error messages, or redirects — without being properly encoded or escaped for safe rendering 
+in the browser. The payload is not stored on the server; instead, an attacker crafts a URL (or form) containing the payload 
+and convinces a victim (for example, via social engineering) to visit it. When the victim follows the link, the server responds 
+with a page that includes the malicious code, which then executes in the victim's browser.
+This is the most common type of XSS, and an example was already shown in the previous section.
+\subsubsection{Stored (persistent)}
+User-supplied input is stored on the target server (for example, in a database, 
+profile field, comment, or message) and later served to other users without proper encoding or sanitization. 
+Because the malicious payload is persisted, any user who views the affected page may receive content that contains 
+executable script, which will run in that user's browser. 
+\paragraph{Example:}
+\begin{figure}[H]   
   \begin{lstlisting}[language=HTML]
   <!-- User submits comment containing: -->
   <div>Nice post!</div><script>alert('xss')</script>
@@ -82,24 +82,44 @@ There are three main types of XSS attacks, based on how the malicious script is 
     <div>Nice post!</div><script>alert('xss')</script>
   </div>
   \end{lstlisting}
-  \end{figure}
-  When other users load the page that lists comments, the server includes the stored comment directly in the HTML, and the script executes in each viewer's browser.
-  \subsubsection{DOM-Based}
-  A form of XSS in which the entire unsafe data flow occurs in the browser. For example, the malicious payload could be included in the URL of the page, and a sensitive JavaScript operation (e.g., document.write, innerHTML, \dots) uses the data to modify the DOM in an unsafe way. 
-  In this case, the server does not reflect or store the malicious input; instead, the vulnerability arises from client-side JavaScript code that processes untrusted data without proper validation or sanitization.
-  \paragraph{Vulnerable example (client-side)}
-  \begin{figure}[H]
-  \begin{lstlisting}[language=HTML]
-  <!-- index.html (static) -->
-  <div id="msg"></div>
+\end{figure}
+When other users load the page that lists comments, the server includes the stored comment directly in the HTML, and the script executes in each viewer's browser.
+  
+\subsubsection{DOM-Based}
+A form of XSS in which the entire unsafe data flow occurs in the browser.
+For example, the malicious payload could be included by the attacker in the URL of the page, and the page's JavaScript
+directly takes that data from the URL and inserts it into the DOM without proper validation or sanitization.
+In this case, the server does not reflect or store the malicious input; instead, the vulnerability arises from client-side
+JavaScript code that processes untrusted data without proper validation or sanitization.
+\subsubsection*{Vulnerable example (client-side):}
+\begin{lstlisting}[language=HTML]
+  </head>
+  Main Dashboard for
   <script>
-    // attacker-controlled: location.hash
-    const frag = location.hash.substring(1);
-    // UNSAFE: inserts raw HTML from the fragment
-    document.getElementById('msg').innerHTML = frag;
+  var pos=document.URL.indexOf("context=")+8;
+  document.write( document.URL.substring(pos, document.URL.length ));
   </script>
-  \end{lstlisting}
-  \end{figure}
+  </html>
+\end{lstlisting}
+If an attacker crafts a URL like:
+\begin{verbatim}
+http://example.com/dashboard.html?context=<script>alert('XSS')</script>
+\end{verbatim}
+When a victim visits this URL, the JavaScript extracts the \texttt{context} parameter
+and writes it directly into the page with the \texttt{document.write} function,
+resulting in the execution of the injected script.
+
+\subsubsection{Reflected vs DOM-based XSS}
+On the surface, reflected and DOM-based XSS may appear similar, as both involve injecting malicious scripts that are executed in the
+victim's browser, without it being stored on the server.
+However, the key difference lies in where the vulnerability exists:
+\begin{itemize}
+  \item \textbf{Reflected XSS} vulnerabilities exist on the server side. The user input is sent to the server,
+  which then reflects it back in the HTTP response without proper sanitization;
+  \item \textbf{DOM-based XSS} vulnerabilities exist entirely on the client side. This time, the malicious input is
+  processed directly by the browser's JavaScript, without any server-side involvement.
+\end{itemize}  
+
 \subsection{XSS mitigation}
 No single technique can solve XSS, but rather a combination of strategies is required:
 \begin{itemize}

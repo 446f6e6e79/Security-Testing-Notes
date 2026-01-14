@@ -198,10 +198,11 @@ Its failure leads to unauthorized information disclosure, modification, or destr
     \begin{figure}[H]
     \begin{lstlisting}[language=Java]
     //Trying to access using this url
-    //https://example.com/app/accountInfo?acct=myacct    
-    PreparedStatement pstmt = connect.prepareStatement(query);
-    pstmt.setString(1, request.getParameter("acct")); 
+    //https://example.com/app/accountInfo?acct=myacct
     //myacct is a "reference" to an account
+    PreparedStatement pstmt = connect.prepareStatement(query);
+    // Set the acct parameter, from the request
+    pstmt.setString(1, request.getParameter("acct"));
     ResultSet results = pstmt.executeQuery();
     \end{lstlisting}
     \end{figure}

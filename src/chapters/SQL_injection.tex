@@ -23,9 +23,9 @@ SELECT * FROM users
 \end{lstlisting}
 Because the boolean expression \texttt{'1'='1'} is always true, the WHERE clause is satisfied for all rows, allowing the attacker to bypass authentication or access data they shouldn't.
 
-\subsection{SQL Injection type}
+\subsection{SQL Injection types}
 There are two main types of SQL injection techniques:
-\subsubsection{In-Band SQL injection:}
+\subsubsection{In-Band (Classical) SQL injection:}
 In this technique, also called CLASSICAL, the attacker uses the same way to hack the database and get the data. The attacker has the possibility to modify the original query and receive the result from the database. This is composed of 3 variants:
 \begin{itemize}
     \item \textbf{Classic SQL Injection}: basic and traditional version, seen in the previous example;
@@ -33,7 +33,7 @@ In this technique, also called CLASSICAL, the attacker uses the same way to hack
     \item \textbf{Union-Based SQL Injection}: the attacker uses the \texttt{UNION} SQL operator to combine the results of the original query with the results of a malicious query.
 \end{itemize}
 
-\subsubsection{Inferential SQL Injection:}
+\subsubsection{Inferential (Blind) SQL Injection:}
 This type of injection, also called BLIND, does not show any error message. It's more difficult to exploit, as it returns information
 only when the application is given SQL payloads that return true or false responses from the server.
 By observing the responses, an attacker can extract sensitive information.

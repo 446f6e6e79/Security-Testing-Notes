@@ -52,7 +52,9 @@ We can now iteratively compute the \textbf{In} and \textbf{Out} sets for each no
     \item $In[n] = \cup_{p\in pred(n)}Out(p)$
     Defined as the union of all outgoing taint sets from predecessor nodes;
     \item $Out[n] = Gen[n] \cup (In[n] \setminus Kill[n])$
-    Defined as the union of the generated taint set at node $n$ and the incoming taint set minus the killed taint set (variables untainted) at node $n$;
+    Defined as the union of the generated taint set at node $n$ and the incoming taint set minus the killed taint set (variables untainted) at node $n$.
+    It's important to note that if two or more edges converge into a single node, and a variable is tainted on at least one of those edges, 
+    it is considered tainted in the In set of the converging node, even if it was killed on other edges.
 \end{itemize}
 \begin{table}[H]
     \centering
