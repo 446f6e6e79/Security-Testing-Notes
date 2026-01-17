@@ -35,7 +35,7 @@ The model checker explores all possible states of the system to verify if some p
 For example, consider a simple model $G$ of a microwave oven, represented as a state-transition graph:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{../../images/microwave_model.png}
+    \includegraphics[width=0.7\textwidth]{../../images/microwave_model.png}
     \caption{Microwave oven model}
 \end{figure}
 We can express properties in LTL, such as:
@@ -80,7 +80,6 @@ where:
     \item $n_x$: exit node of the program.
 \end{itemize}
 For example, consider the following simple program and its corresponding CFG:
-
 % First minipage with code
 \begin{minipage}[c]{0.45\textwidth}
     \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
@@ -102,10 +101,17 @@ For example, consider the following simple program and its corresponding CFG:
     \captionof{figure}{Control-Flow Graph}
     \label{fig:cfg_example}
 \end{minipage}
-We can then define some important concepts related to CFGs:
+\\\\We can then define some important concepts related to CFGs:
 \paragraph{Path:} represents a possible program execution. It is composed of a sequence of nodes and edges starting from the entry node and ending at a terminal node.
 \paragraph{Linearly independent path:} a path is \textbf{linearly independent} if it introduces at least one new edge that has not been traversed by any previously defined path.  
 These paths are used to identify distinct behaviors implemented in a program. Typically, a test case should be defined to verify each independent path.
+The number of linearly independent paths in a program is given by the \textbf{Cyclomatic Complexity} metric:
+\[\#IP = E - N\]
+where:
+\begin{itemize}
+    \item $E$: number of edges in the CFG;
+    \item $N$: number of nodes in the CFG;
+\end{itemize}
 
 \subsubsection{Def-Use pairs}
 Another important concept in flow analysis is the \textit{Def-Use pair}.

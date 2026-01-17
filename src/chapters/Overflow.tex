@@ -1,5 +1,6 @@
 \section{Overflow}
 To understand overflow vulnerabilities, it is important to have a basic understanding of how memory is organized in a running process.
+
 \subsection{Introduction}
 \label{introduction-to-overflow}
 The memory of a process is divided into several distinct areas, each serving a specific purpose for data storage and program execution. It can be generally divided as follows:
@@ -29,7 +30,8 @@ Always check loop termination and array boundaries.
 
 \subsection{String format vulnerabilities}
 A non-validated string may be used as a \textit{format string} in certain functions (e.g., \texttt{printf} in C/C++).
-If an attacker can insert format specifiers (like \texttt{\%x}, \texttt{\%s}, \texttt{\%n}) into the string, they can read or write arbitrary memory locations.
+If an attacker can insert format specifiers (like \texttt{\%x}, \texttt{\%s}, \texttt{\%n} - format specifiers that pop values from the stack)
+into the string, they can read or write arbitrary memory locations.
 This is possible if the formatting option has an undeclared number of arguments, such as in the function:
 \begin{verbatim}
     int printf(const char *format, ...);
