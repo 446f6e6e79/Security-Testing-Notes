@@ -64,3 +64,10 @@ SHAP (SHapley Additive exPlanations) is a popular model-agnostic method for expl
 It shows the contribution of each feature to the final prediction.
 It is based on the breakdown of the prediction into to show the impact of each feature.
 \\In the context of vulnerability detection, SHAP can assign to each token a score indicating its positive or negative contribution to the vulnerability prediction.
+
+\subsubsection*{GNN Explainer}
+A model-specific method for explaining graph-based models is the GNN Explainer.
+It explains why an individual node belongs to a certain class by identifying a 
+subgraph and a subset of node features such that the prediction of the model are maximally preserved.
+\\In vulnerability detection, GNN Explainer can be used to identify the specific parts of the code graph that contributed to the vulnerability prediction.
+
