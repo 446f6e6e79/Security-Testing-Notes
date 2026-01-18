@@ -2,7 +2,7 @@
 To understand supply chain attacks, it's essential to grasp the concept of dependencies in software development.
 \subsection{Dependencies in Software Development}
 In modern software development, applications often rely on external libraries, frameworks, and tools to enhance functionality and to avoid reinventing the wheel. 
-These external components are known as dependencies, that are usually managed through package managers (like npm, Maven, pip, etc.).
+These external components are known as dependencies, and they are usually managed through package managers (like npm, Maven, pip, etc.).
 \\Dependencies can be:
 \begin{itemize}
     \item \textbf{Direct dependencies}: libraries or packages that are explicitly included in a project's codebase. We are the owners of these dependencies;
@@ -27,9 +27,10 @@ The typical steps of a supply chain attack are:
 \end{itemize}
 
 \subsubsection*{Attack Vectors}
-Common vectors for supply chain attacks include:
+Since this is an indirect attack, the attack vectors are different from traditional attacks.
+Some common attack vectors include:
 \begin{itemize}
-    \item \textbf{Source code}: attackers compromise the proprietary code. Usually the credental of developers are needed as well as the access to the repository;
+    \item \textbf{Source code}: attackers compromise the proprietary code. Usually the credentials of developers as well as the access to the source code repository are needed;
     \item \textbf{Developer accounts}: attackers gain access to developer accounts to inject malicious code into the software during development or distribution;
     \item \textbf{Dependencies}: attackers compromise third-party libraries or packages that are used as dependencies in the target application;
     \item \textbf{Build tooling}: attackers can compromise build tools or CI/CD pipelines to inject malicious code during the build process;
