@@ -50,7 +50,7 @@ Optional but recommended for development:
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/446f6e6e79/Security-Testing-Notes
+   git clone https://github.com/davide-dona/Security-Testing-Notes
    cd Security-Testing-Notes
    ```
 
@@ -99,7 +99,7 @@ To keep the repository clean and make it easy to review changes, please follow t
 2. **Clone** your fork:
 
    ```bash
-   git clone https://github.com/446f6e6e79/Security-Testing-Notes
+   git clone https://github.com/davide-dona/Security-Testing-Notes
    cd Security-Testing-Notes
    ```
 
